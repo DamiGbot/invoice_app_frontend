@@ -1,9 +1,10 @@
-import Image from "next/image";
+import InvoiceList from "./components/InvoiceList";
+import Wrapper from "./components/Wrapper";
 
 export default function Home() {
 	return (
-		<main className="">
-			<h1>Home page</h1>
-		</main>
+		<Wrapper>
+			<InvoiceList />
+		</Wrapper>
 	);
 }
