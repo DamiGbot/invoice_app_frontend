@@ -37,7 +37,7 @@ type Invoice = {
 
 export default function InvoiceList() {
 	// using this to test the no invoice state, remember to delete this
-	data.length = 0;
+	// data.length = 0;
 
 	return (
 		<>
@@ -76,7 +76,7 @@ export default function InvoiceList() {
 			{/* Invoice list cards */}
 			<section
 				className={`section-container ${
-					data.length > 0 ? "mt-[32px] flex flex-col gap-[8px]" : ""
+					data.length > 0 ? "mt-[32px] flex flex-col gap-[16px]" : ""
 				}`}
 			>
 				{/* I want to have conditional rendering based on the data length */}
