@@ -35,8 +35,12 @@ type Invoice = {
 };
 
 export default function InvoiceList() {
+	// using this to test the no invoice state, remember to delete this
+	// data.length = 0;
+
 	return (
 		<>
+			{/* Top section of the invoicelist */}
 			<section>
 				<div className="flex flex-row items-center justify-between">
 					<div>
@@ -44,7 +48,7 @@ export default function InvoiceList() {
 							Invoices
 						</p>
 						<p className="font-medium text-[12px] tracking-[-0.25px] text-[#888EB0]">
-							No invoices
+							<span>{data.length == 0 ? "No" : data.length}</span> invoices
 						</p>
 					</div>
 
@@ -68,10 +72,12 @@ export default function InvoiceList() {
 				</div>
 			</section>
 
+			{/* Invoice list cards */}
 			<section className="mt-[32px] flex flex-col gap-[8px]">
-				{data.map((item) => {
+				{data.map((item: Invoice) => {
 					const capitalizedStatus =
 						item.status.charAt(0).toUpperCase() + item.status.slice(1);
+
 					return (
 						<Card key={item.id}>
 							{" "}
@@ -99,11 +105,6 @@ export default function InvoiceList() {
 										</div>
 									</div>
 
-									{/* <div className="w-[104px] h-[40px] bg-[green] flex justify-center items-center rounded-[6px]">
-									<div className="w-[8px] h-[8px] rounded-full bg-black mr-[8px]"></div>
-									<p>{item.status}</p>
-								</div> */}
-
 									<div
 										className={`w-[104px] h-[40px] flex justify-center items-center rounded-[6px] ${
 											capitalizedStatus === "Paid"
@@ -116,7 +117,7 @@ export default function InvoiceList() {
 										}`}
 									>
 										<div
-											className={`w-[8px] h-[8px] rounded-full bg-black mr-[8px] ${
+											className={`w-[8px] h-[8px] rounded-full mr-[8px] ${
 												capitalizedStatus === "Paid"
 													? "bg-[#33D69F] bg-opacity-100"
 													: capitalizedStatus === "Pending"
