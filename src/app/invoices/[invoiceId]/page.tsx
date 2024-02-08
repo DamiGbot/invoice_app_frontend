@@ -3,11 +3,10 @@ import InvoiceStatus from "@/app/components/UI/InvoiceStatus";
 import data from "../../helpers/data.json";
 import { Invoice } from "@/app/types/Invoice";
 import { formatDate } from "@/app/helpers/formatDate";
+import { InvoiceParams } from "@/app/types/Params";
 
 type InoviceDetailsProps = {
-	params: {
-		invoiceId: string;
-	};
+	params: InvoiceParams;
 };
 
 export default function InvoiceDetails({ params }: InoviceDetailsProps) {

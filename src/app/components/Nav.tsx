@@ -2,13 +2,14 @@ import Image from "next/image";
 import logoIcon from "../../../public/assets/logo.svg";
 import moonIcon from "../../../public/assets/icon-moon.svg";
 import imageAvatar from "../../../public/assets/image-avatar.jpg";
+import Link from "next/link";
 
 export default function Nav() {
 	return (
 		<nav className="w-full flex flex-row justify-between bg-[#373B53] ">
-			<div>
+			<Link href={"/"}>
 				<Image src={logoIcon} alt="This is the logo of the application" />
-			</div>
+			</Link>
 			<div className="flex flex-row items-center">
 				<div>
 					{/* This icon has to change and affect the display */}
