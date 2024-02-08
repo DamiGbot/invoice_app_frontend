@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import { InvoiceParams } from "@/app/types/Params";
 
@@ -14,6 +15,17 @@ type EditInvoice = {
 };
 
 export default function EditInvoice({ params }: EditInvoice) {
+	useEffect(() => {
+		// Set specific background color when the page/component mounts
+		document.body.style.backgroundColor = "#fff"; // New background color
+		document.body.style.height = "100%";
+
+		// Optional: Reset to default background color when the component unmounts
+		return () => {
+			document.body.style.backgroundColor = "#f8f8fb"; // Default background color
+		};
+	}, []);
+
 	console.log(params);
 	const invoiceData = data.find((el) => el.id === params.invoiceId) as Invoice;
 
@@ -303,7 +315,7 @@ export default function EditInvoice({ params }: EditInvoice) {
 
 								<div className="flex w-full gap-[16px]">
 									<div className="flex gap-[16px] w-7/12">
-										<div className="w-full mb-[24px]">
+										<div className="mb-[24px] w-8/12">
 											<label
 												className="font-medium text-[12px] tracking-[-0.25px] text-[#7E88C3] leading-[15px] mb-[10px]"
 												htmlFor="firstName"

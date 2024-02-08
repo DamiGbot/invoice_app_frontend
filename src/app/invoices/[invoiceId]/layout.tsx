@@ -6,7 +6,6 @@ import arrowLeft from "../../../../public/assets/icon-arrow-left.svg";
 import Wrapper from "@/app/components/Wrapper";
 import Button from "@/app/components/UI/Button";
 import { InvoiceParams } from "@/app/types/Params";
-import { useEffect } from "react";
 
 type InvoiceLayoutProps = {
 	children: React.ReactNode;
@@ -64,7 +63,7 @@ export default function InvoiceLayout({
 
 			{isEdit ? (
 				<footer
-					className={`w-full bg-[#ffffff] p-[24px] flex gap-[8px] justify-end items-center`}
+					className={`shadow-top w-full bg-[#ffffff] p-[24px] flex gap-[8px] justify-end items-center`}
 				>
 					<Button
 						onClick={cancelHandler}
