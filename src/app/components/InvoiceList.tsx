@@ -12,6 +12,7 @@ import Card from "./Card";
 import InvoiceStatus from "./UI/InvoiceStatus";
 import { Invoice } from "../types/Invoice";
 import { formatDate } from "../helpers/formatDate";
+import Link from "next/link";
 
 export default function InvoiceList() {
 	// using this to test the no invoice state, remember to delete this
@@ -48,12 +49,15 @@ export default function InvoiceList() {
 							</span>
 						</div>
 
-						<div className="w-[90px] h-[44px] bg-[#7C5DFA] flex items-center p-[6px] rounded-[24px] ml-[18px] gap-[8px]">
+						<Link
+							href="/invoices/create"
+							className="w-[90px] h-[44px] bg-[#7C5DFA] flex items-center p-[6px] rounded-[24px] ml-[18px] gap-[8px]"
+						>
 							<div className="bg-[#FFFFFF] w-[32px] h-[32px] rounded-full flex items-center justify-center">
 								<Image src={plus} alt="d" />
 							</div>
 							<p className="text-[#FFFFFF]">New</p>
-						</div>
+						</Link>
 					</div>
 				</div>
 			</section>
