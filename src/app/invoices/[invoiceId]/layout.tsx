@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import arrowLeft from "../../../../public/assets/icon-arrow-left.svg";
 import Wrapper from "@/app/components/Wrapper";
 import Button from "@/app/components/UI/Button";
 import { InvoiceParams } from "@/app/types/Params";
+import Modal from "@/app/components/UI/Modal";
+import Card from "@/app/components/Card";
 
 type InvoiceLayoutProps = {
 	children: React.ReactNode;
@@ -16,6 +19,8 @@ export default function InvoiceLayout({
 	children,
 	params,
 }: InvoiceLayoutProps) {
+	const [isModalOpen, setModalOpen] = useState(false);
+
 	const router = useRouter();
 	const pathString = usePathname();
 	const isEdit = pathString.split("/")[3] === "edit";
@@ -31,7 +36,14 @@ export default function InvoiceLayout({
 	};
 
 	const deleteHandler = () => {
-		router.push("/edit");
+		setModalOpen(true);
+		document.body.style.overflow = "hidden";
+	};
+
+	const closeModal = () => {
+		setModalOpen(false);
+		// Optionally, reset scrolling behavior when modal closes
+		document.body.style.overflow = "auto";
 	};
 
 	const markAsPaidHandler = () => {
@@ -60,6 +72,32 @@ export default function InvoiceLayout({
 
 				{children}
 			</Wrapper>
+
+			{isModalOpen && (
+				<Modal isOpen={isModalOpen} onClose={closeModal}>
+					<Card className="mx-[24px] p-[32px]">
+						<p className="mb-[8px] font-bold text-[20px] tracking-[-0.42px] text-[#0C0E16] leading-[32px]">
+							Confirm Deletion
+						</p>
+						<p className="mb-[24px] font-medium text-[12px] tracking-[-0.25px] text-[#888EB0] leading-[22px]">{`Are you sure you want to delete invoice #${currentId}? This action cannot be undone.`}</p>
+
+						<div className="flex gap-[8px] justify-end items-center">
+							<Button
+								onClick={closeModal}
+								className="bg-[#F9FAFE] text-[#7E88C3]"
+							>
+								Cancel
+							</Button>
+							<Button
+								onClick={deleteHandler} // This should do the final delete
+								className="bg-[#EC5757] text-[#FFFF]"
+							>
+								Delete
+							</Button>
+						</div>
+					</Card>
+				</Modal>
+			)}
 
 			{isEdit ? (
 				<footer
