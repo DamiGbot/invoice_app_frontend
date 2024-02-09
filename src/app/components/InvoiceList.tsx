@@ -1,14 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 import arrowDown from "../../../public/assets/icon-arrow-down.svg";
 import plus from "../../../public/assets/icon-plus.svg";
 import data from "../helpers/data.json";
 import illustrationEmpty from "../../../public/assets/illustration-empty.svg";
 
-import Image from "next/image";
 import Card from "./Card";
+import { useTheme } from "../context/themeContext";
 import InvoiceStatus from "./UI/InvoiceStatus";
 import { Invoice } from "../types/Invoice";
 import { formatDate } from "../helpers/formatDate";
@@ -17,7 +18,9 @@ import Link from "next/link";
 export default function InvoiceList() {
 	// using this to test the no invoice state, remember to delete this
 	// data.length = 0;
+
 	const router = useRouter();
+	const { isLight } = useTheme();
 
 	const invoiceClickHanlder = (id: string) => {
 		console.log("working");
@@ -31,17 +34,29 @@ export default function InvoiceList() {
 			<section>
 				<div className="flex flex-row items-center justify-between">
 					<div>
-						<p className="font-bold text-[20px] tracking-[-0.63px] text-[#0C0E16]">
+						<p
+							className={`font-bold text-[20px] tracking-[-0.63px] ${
+								isLight ? "text-[#0C0E16]" : "text-[#fff]"
+							}`}
+						>
 							Invoices
 						</p>
-						<p className="font-medium text-[12px] tracking-[-0.25px] text-[#888EB0]">
+						<p
+							className={`font-medium text-[12px] tracking-[-0.25px]  ${
+								isLight ? "text-[#888EB0]" : "text-[#DFE3FA]"
+							}`}
+						>
 							<span>{data.length === 0 ? "No" : data.length}</span> invoices
 						</p>
 					</div>
 
 					<div className="flex flex-row">
 						<div className="flex items-center">
-							<div className="font-bold text-[12px] tracking-[-0.25px] text-[#0C0E16] leading-[15px]">
+							<div
+								className={`font-bold text-[12px] tracking-[-0.25px] ${
+									isLight ? "text-[#0C0E16]" : "text-[#fff]"
+								} leading-[15px]`}
+							>
 								Filter
 							</div>
 							<span className="ml-[12px]">
@@ -73,10 +88,18 @@ export default function InvoiceList() {
 				{data.length === 0 ? (
 					<div className="text-center h-full flex flex-1 flex-col justify-center items-center">
 						<Image src={illustrationEmpty} alt="there is no ivoice" />
-						<p className="mt-[40px] mb-[24px] font-bold text-[20px] tracking-[-0.63px] text-[#0C0E16]">
+						<p
+							className={`mt-[40px] mb-[24px] font-bold text-[20px] tracking-[-0.63px] ${
+								isLight ? "text-[#0C0E16]" : "text-[#fff]"
+							} `}
+						>
 							There is nothing here
 						</p>
-						<p className="font-medium text-[15px] tracking-[-0.25px] text-[#888EB0] leading-[15px]">
+						<p
+							className={`font-medium text-[15px] tracking-[-0.25px]  ${
+								isLight ? "text-[#888EB0]" : "text-[#DFE3FA]"
+							} leading-[15px]`}
+						>
 							Create an invoice by cliking the <br />
 							<span className="font-bold">New</span> button and get started
 						</p>
@@ -85,7 +108,9 @@ export default function InvoiceList() {
 					data.map((item: Invoice, index) => {
 						return (
 							<Card
-								className={`${index === data.length - 1 ? "mb-[6px]" : ""}`}
+								className={`${index === data.length - 1 ? "mb-[6px]" : ""} ${
+									isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"
+								}`}
 								key={item.id}
 								onClick={() => invoiceClickHanlder(item.id)}
 							>
@@ -93,11 +118,19 @@ export default function InvoiceList() {
 								{/* Add a unique key prop */}
 								<div className="flex flex-col gap-[24px]">
 									<div className="flex justify-between">
-										<p className="font-bold text-[12px] tracking-[-0.25px] text-[#0C0E16] leading-[15px]">
+										<p
+											className={`font-bold text-[12px] tracking-[-0.25px] ${
+												isLight ? "text-[#0C0E16]" : "text-[#fff]"
+											}  leading-[15px]`}
+										>
 											<span className="text-[#7E88C3]">#</span>
 											{item.id}
 										</p>
-										<p className="font-medium text-[12px] tracking-[-0.25px] text-[#858BB2] leading-[15px]">
+										<p
+											className={`font-medium text-[12px] tracking-[-0.25px]  ${
+												isLight ? "text-[#858BB2]" : "text-[#fff]"
+											} leading-[15px]`}
+										>
 											{item.clientName}
 										</p>
 									</div>
@@ -105,11 +138,25 @@ export default function InvoiceList() {
 									<div className="flex justify-between">
 										<div>
 											<div>
-												<p className="font-medium text-[12px] tracking-[-0.25px] text-[#7E88C3] leading-[15px]">
-													<span className="text-[#888EB0]">Due</span>{" "}
+												<p
+													className={`font-medium text-[12px] tracking-[-0.25px]  ${
+														isLight ? "text-[#7E88C3]" : "text-[#DFE3FA]"
+													} leading-[15px]`}
+												>
+													<span
+														className={`${
+															isLight ? "text-[#888EB0]" : "text-[#DFE3FA]"
+														}`}
+													>
+														Due
+													</span>{" "}
 													{formatDate(item.paymentDue)}
 												</p>
-												<p className="font-bold text-[16px] tracking-[-0.8px] text-[#0C0E16] leading-[24px]">
+												<p
+													className={`font-bold text-[16px] tracking-[-0.8px] ${
+														isLight ? "text-[#0C0E16]" : "text-[#fff]"
+													} leading-[24px]`}
+												>
 													&#163; {item.total}{" "}
 												</p>
 											</div>

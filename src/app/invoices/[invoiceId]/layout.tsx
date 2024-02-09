@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
+
+import { useTheme } from "@/app/context/themeContext";
 import arrowLeft from "../../../../public/assets/icon-arrow-left.svg";
 import Wrapper from "@/app/components/Wrapper";
 import Button from "@/app/components/UI/Button";
@@ -20,9 +22,10 @@ export default function InvoiceLayout({
 	params,
 }: InvoiceLayoutProps) {
 	const [isModalOpen, setModalOpen] = useState(false);
-
 	const router = useRouter();
 	const pathString = usePathname();
+	const { isLight } = useTheme();
+
 	const isEdit = pathString.split("/")[3] === "edit";
 
 	const currentId = params.invoiceId;
@@ -65,7 +68,11 @@ export default function InvoiceLayout({
 						<Image src={arrowLeft} alt="arrow Down" />
 					</span>
 
-					<div className="font-bold text-[12px] tracking-[-0.25px] text-[#0C0E16] leading-[15px]">
+					<div
+						className={`font-bold text-[12px] tracking-[-0.25px] ${
+							isLight ? "text-[#0C0E16] " : "text-[#fff]"
+						} leading-[15px]`}
+					>
 						Go back
 					</div>
 				</div>
@@ -75,8 +82,16 @@ export default function InvoiceLayout({
 
 			{isModalOpen && (
 				<Modal isOpen={isModalOpen} onClose={closeModal}>
-					<Card className="mx-[24px] p-[32px]">
-						<p className="mb-[8px] font-bold text-[20px] tracking-[-0.42px] text-[#0C0E16] leading-[32px]">
+					<Card
+						className={`mx-[24px] p-[32px] ${
+							isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"
+						}`}
+					>
+						<p
+							className={`mb-[8px] font-bold text-[20px] tracking-[-0.42px] ${
+								isLight ? "text-[#0C0E16]" : "text-[#fff]"
+							} leading-[32px]`}
+						>
 							Confirm Deletion
 						</p>
 						<p className="mb-[24px] font-medium text-[12px] tracking-[-0.25px] text-[#888EB0] leading-[22px]">{`Are you sure you want to delete invoice #${currentId}? This action cannot be undone.`}</p>
@@ -84,7 +99,11 @@ export default function InvoiceLayout({
 						<div className="flex gap-[8px] justify-end items-center">
 							<Button
 								onClick={closeModal}
-								className="bg-[#F9FAFE] text-[#7E88C3]"
+								className={`${
+									isLight
+										? "bg-[#F9FAFE] text-[#7E88C3]"
+										: "bg-[#252945] text-[#DFE3FA]"
+								}`}
 							>
 								Cancel
 							</Button>
@@ -101,11 +120,17 @@ export default function InvoiceLayout({
 
 			{isEdit ? (
 				<footer
-					className={`shadow-top w-full bg-[#ffffff] p-[24px] flex gap-[8px] justify-end items-center`}
+					className={`shadow-top w-full ${
+						isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"
+					} p-[24px] flex gap-[8px] justify-end items-center`}
 				>
 					<Button
 						onClick={cancelHandler}
-						className="bg-[#F9FAFE] text-[#7E88C3]"
+						className={`${
+							isLight
+								? "bg-[#F9FAFE] text-[#7E88C3]"
+								: "bg-[#252945] text-[#DFE3FA]"
+						}`}
 					>
 						Cancel
 					</Button>
@@ -118,9 +143,18 @@ export default function InvoiceLayout({
 				</footer>
 			) : (
 				<footer
-					className={`bg-[#ffffff] p-[24px] flex justify-between items-center`}
+					className={`${
+						isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"
+					} p-[24px] flex justify-between items-center`}
 				>
-					<Button onClick={editHandler} className="bg-[#F9FAFE] text-[#7E88C3]">
+					<Button
+						onClick={editHandler}
+						className={`${
+							isLight
+								? "bg-[#F9FAFE] text-[#7E88C3]"
+								: "bg-[#252945] text-[#DFE3FA]"
+						}`}
+					>
 						Edit
 					</Button>
 					<Button onClick={deleteHandler} className="bg-[#EC5757] text-[#FFFF]">

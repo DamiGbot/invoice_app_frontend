@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react";
+import { useTheme } from "../context/themeContext";
 
 type InputFieldProps = {
 	label: string;
@@ -14,23 +15,33 @@ const InputField = ({
 	type,
 	value,
 	onChange,
-}: InputFieldProps) => (
-	<div className="w-full mb-[24px]">
-		<label
-			className="font-medium text-[12px] tracking-[-0.25px] text-[#7E88C3] leading-[15px] mb-[10px]"
-			htmlFor={name}
-		>
-			{label}
-		</label>
-		<input
-			className="w-full rounded-[4px] border-[#DFE3FA] border pl-[19px] py-[16px] font-bold text-[12px] tracking-[-0.25px] text-[#0C0E16] leading-[15px]"
-			id={name}
-			name={name}
-			type={type}
-			value={value}
-			onChange={onChange}
-		/>
-	</div>
-);
+}: InputFieldProps) => {
+	const { isLight } = useTheme();
+
+	return (
+		<div className="w-full mb-[24px]">
+			<label
+				className={`font-medium text-[12px] tracking-[-0.25px]  ${
+					isLight ? "text-[#7E88C3]" : "text-[#888EB0]"
+				} leading-[15px] mb-[10px]`}
+				htmlFor={name}
+			>
+				{label}
+			</label>
+			<input
+				className={`w-full rounded-[4px]  border pl-[19px] py-[16px] font-bold text-[12px] tracking-[-0.25px] leading-[15px] ${
+					isLight
+						? "text-[#0C0E16] border-[#DFE3FA]"
+						: "bg-[#1E2139] border-[#252945] text-[#fff]"
+				}`}
+				id={name}
+				name={name}
+				type={type}
+				value={value}
+				onChange={onChange}
+			/>
+		</div>
+	);
+};
 
 export default InputField;

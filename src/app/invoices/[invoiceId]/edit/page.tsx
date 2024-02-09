@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTheme } from "@/app/context/themeContext";
+
 import { InvoiceParams } from "@/app/types/Params";
 
 import data from "../../../helpers/data.json";
 import { Invoice } from "@/app/types/Invoice";
+
 import { useFormik } from "formik";
 import InvoiceForm from "@/app/components/InvoiceForm";
 
@@ -13,23 +16,31 @@ type EditInvoice = {
 };
 
 export default function EditInvoice({ params }: EditInvoice) {
-	useEffect(() => {
-		// Set specific background color when the page/component mounts
-		document.body.style.backgroundColor = "#fff"; // New background color
-		document.body.style.height = "100%";
+	const { isLight } = useTheme();
 
-		// Optional: Reset to default background color when the component unmounts
+	useEffect(() => {
+		const mainElement = document.querySelector("main");
+		if (mainElement) {
+			mainElement.style.backgroundColor = isLight ? "#fff" : "#141625";
+		}
+
 		return () => {
-			document.body.style.backgroundColor = "#f8f8fb"; // Default background color
+			if (mainElement) {
+				mainElement.style.backgroundColor = isLight ? "#f8f8fb" : "#141625";
+			}
 		};
-	}, []);
+	}, [isLight]);
 
 	console.log(params);
 	const invoiceData = data.find((el) => el.id === params.invoiceId) as Invoice;
 
 	return (
 		<section className="mt-[24px]">
-			<p className="mb-[24px] font-bold text-[24px] tracking-[-0.25px] text-[#0C0E16] leading-[32px]">
+			<p
+				className={`mb-[24px] font-bold text-[24px] tracking-[-0.25px] ${
+					isLight ? "text-[#0C0E16] " : "text-[#fff]"
+				} leading-[32px]`}
+			>
 				Edit <span className="text-[#888EB0]">#</span>
 				{invoiceData.id}
 			</p>

@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { useTheme } from "@/app/context/themeContext";
+
 import { useRouter, usePathname } from "next/navigation";
 import arrowLeft from "../../../../public/assets/icon-arrow-left.svg";
 import Wrapper from "@/app/components/Wrapper";
@@ -17,7 +19,9 @@ export default function InvoiceLayout({
 	params,
 }: InvoiceLayoutProps) {
 	const router = useRouter();
+	const { isLight } = useTheme();
 	const pathString = usePathname();
+
 	const isEdit = pathString.split("/")[3] === "edit";
 
 	const currentId = params.invoiceId;
@@ -53,7 +57,11 @@ export default function InvoiceLayout({
 						<Image src={arrowLeft} alt="arrow Down" />
 					</span>
 
-					<div className="font-bold text-[12px] tracking-[-0.25px] text-[#0C0E16] leading-[15px]">
+					<div
+						className={`font-bold text-[12px] tracking-[-0.25px] ${
+							isLight ? "text-[#0C0E16] " : "text-[#fff]"
+						} leading-[15px]`}
+					>
 						Go back
 					</div>
 				</div>
@@ -62,7 +70,9 @@ export default function InvoiceLayout({
 			</Wrapper>
 
 			<footer
-				className={`shadow-top bg-[#ffffff] p-[24px] flex gap-[7px] justify-between items-center font-bold text-[12px] tracking-[-0.25px] leading-[15px]`}
+				className={`shadow-top ${
+					isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"
+				} p-[24px] flex gap-[7px] justify-between items-center font-bold text-[12px] tracking-[-0.25px] leading-[15px]`}
 			>
 				<Button
 					onClick={cancelHandler}

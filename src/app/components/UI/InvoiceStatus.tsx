@@ -1,8 +1,14 @@
+"use client";
+
+import { useTheme } from "@/app/context/themeContext";
+
 type InvoiceStatusProps = {
 	status: string;
 };
 
 export default function InvoiceStatus({ status }: InvoiceStatusProps) {
+	const { isLight } = useTheme();
+
 	const capitalizedStatus = status.charAt(0).toUpperCase() + status.slice(1);
 
 	return (
@@ -13,7 +19,11 @@ export default function InvoiceStatus({ status }: InvoiceStatusProps) {
 					: capitalizedStatus === "Pending"
 					? "bg-[#FF8F00] text-[#FF8F00] bg-opacity-10"
 					: capitalizedStatus === "Draft"
-					? "bg-[#373B53] text-[#373B53] bg-opacity-10"
+					? `bg-[#373B53] ${
+							isLight
+								? "bg-[#373B53] text-[#373B53]"
+								: "bg-[#DFE3FA] text-[#DFE3FA]"
+					  } bg-opacity-10`
 					: "" // Default style if status doesn't match
 			}`}
 		>
@@ -24,7 +34,7 @@ export default function InvoiceStatus({ status }: InvoiceStatusProps) {
 						: capitalizedStatus === "Pending"
 						? "bg-[#FF8F00] bg-opacity-100"
 						: capitalizedStatus === "Draft"
-						? "bg-[#373B53] bg-opacity-100"
+						? `${isLight ? "bg-[#373B53]" : "bg-[#DFE3FA]"} bg-opacity-100`
 						: "" // Default style if status doesn't match
 				}`}
 			></div>

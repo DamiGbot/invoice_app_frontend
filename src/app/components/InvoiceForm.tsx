@@ -2,6 +2,7 @@ import React from "react";
 
 import Image from "next/image";
 
+import { useTheme } from "../context/themeContext";
 import InputField from "./InputField";
 import Button from "./UI/Button";
 import iconDelete from "../../../public/assets/icon-delete.svg";
@@ -12,6 +13,8 @@ type InvoiceFormProps = {
 };
 
 export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
+	const { isLight } = useTheme();
+
 	return (
 		<form>
 			<div className="mb-[40px]">
@@ -154,13 +157,19 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 								<div className="flex gap-[16px] w-7/12">
 									<div className="mb-[24px] w-8/12">
 										<label
-											className="font-medium text-[12px] tracking-[-0.25px] text-[#7E88C3] leading-[15px] mb-[10px]"
+											className={`font-medium text-[12px] tracking-[-0.25px] ${
+												isLight ? "text-[#7E88C3]" : "text-[#888EB0]"
+											} leading-[15px] mb-[10px]`}
 											htmlFor={`Qty ${index}`}
 										>
 											Qty.
 										</label>
 										<input
-											className="w-full rounded-[4px] border-[#DFE3FA] border pl-[19px] py-[16px] font-bold text-[12px] tracking-[-0.25px] text-[#0C0E16] leading-[15px]"
+											className={`w-full rounded-[4px] border pl-[19px] py-[16px] font-bold text-[12px] tracking-[-0.25px] leading-[15px] ${
+												isLight
+													? "text-[#0C0E16] border-[#DFE3FA]"
+													: "bg-[#1E2139] border-[#252945] text-[#fff]"
+											}`}
 											id={`Qty ${index}`}
 											name={`Qty ${index}`}
 											type="number"
@@ -171,13 +180,19 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 
 									<div className="w-full mb-[24px]">
 										<label
-											className="font-medium text-[12px] tracking-[-0.25px] text-[#7E88C3] leading-[15px] mb-[10px]"
+											className={`font-medium text-[12px] tracking-[-0.25px] ${
+												isLight ? "text-[#7E88C3]" : "text-[#888EB0]"
+											} leading-[15px] mb-[10px]`}
 											htmlFor={`Price ${index}`}
 										>
 											Price
 										</label>
 										<input
-											className="w-full rounded-[4px] border-[#DFE3FA] border pl-[19px] py-[16px] font-bold text-[12px] tracking-[-0.25px] text-[#0C0E16] leading-[15px]"
+											className={`w-full rounded-[4px] border pl-[19px] py-[16px] font-bold text-[12px] tracking-[-0.25px]  leading-[15px] ${
+												isLight
+													? "text-[#0C0E16] border-[#DFE3FA]"
+													: "bg-[#1E2139] border-[#252945] text-[#fff]"
+											}`}
 											id={`Price ${index}`}
 											name={`Price ${index}`}
 											type="number"
@@ -189,10 +204,14 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 
 								<div className="flex gap-[16px] w-5/12">
 									<div className="w-full">
-										<p className="font-medium text-sm text-[#7E88C3] mb-1.5">
+										<p
+											className={`font-medium text-sm ${
+												isLight ? "text-[#7E88C3]" : "text-[#888EB0]"
+											} mb-1.5`}
+										>
 											Total
 										</p>
-										<div className="w-full py-4  font-bold text-[12px] tracking-[-0.25px] text-[#0C0E16] leading-[15px]">
+										<div className="w-full py-4  font-bold text-[12px] tracking-[-0.25px] text-[#888EB0] leading-[15px]">
 											{item.total}
 										</div>
 									</div>
@@ -208,7 +227,11 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 				})}
 
 				<Button
-					className="w-full bg-[#F9FAFE] rounded-3xl font-bold text-[12px] tracking-[-0.25px] text-[#7E88C3] leading-[15px]"
+					className={`w-full rounded-3xl font-bold text-[12px] tracking-[-0.25px] ${
+						isLight
+							? "text-[#7E88C3] bg-[#F9FAFE]"
+							: "text-[#888EB0] bg-[#252945]"
+					} leading-[15px]`}
 					onClick={() => {
 						console.log("Button Clicked");
 					}}
