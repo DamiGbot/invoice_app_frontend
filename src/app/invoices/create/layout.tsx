@@ -72,22 +72,33 @@ export default function InvoiceLayout({
 			<footer
 				className={`shadow-top ${
 					isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"
-				} p-[24px] flex gap-[7px] justify-between items-center font-bold text-[12px] tracking-[-0.25px] leading-[15px]`}
+				} p-[24px] flex justify-between items-center font-bold text-[12px] tracking-[-0.25px] leading-[15px]`}
 			>
 				<Button
 					onClick={cancelHandler}
-					className="bg-[#F9FAFE] text-[#7E88C3] px-[16px]"
+					createPage={true}
+					className={`px-[16px] ${
+						isLight
+							? "bg-[#F9FAFE] text-[#7E88C3]"
+							: "bg-[#252945] text-[#DFE3FA]"
+					}`}
 				>
 					Discard
 				</Button>
 				<Button
 					onClick={cancelHandler}
-					className="bg-[#373B53] text-[#888EB0] px-[16px]"
+					createPage={true}
+					className={`px-[16px] ${
+						isLight
+							? "bg-[#373B53] text-[#888EB0]"
+							: "bg-[#373B53] text-[#DFE3FA]"
+					}`}
 				>
 					Save as Draft
 				</Button>
 				<Button
 					onClick={markAsPaidHandler}
+					createPage={true}
 					className="bg-[#7C5DFA] text-[#FFFFFF] px-[16px]"
 				>
 					Save & Send

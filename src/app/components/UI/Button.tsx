@@ -1,8 +1,11 @@
+import { create } from "domain";
+
 type ButtonProp = {
 	children: React.ReactNode;
 	className?: string;
 	onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 	type?: "button";
+	createPage?: boolean;
 };
 
 export default function Button({
@@ -10,9 +13,12 @@ export default function Button({
 	children,
 	onClick,
 	type,
+	createPage,
 }: ButtonProp) {
 	const style =
-		`pt-[17px] pb-[16px] px-[24px] rounded-full font-bold text-[12px] tracking-[-0.25px] leading-[15px] bounce-effect` +
+		`${
+			createPage ? "" : "px-[24px]"
+		} pt-[17px] pb-[16px]  rounded-full font-bold text-[12px] tracking-[-0.25px] leading-[15px] bounce-effect` +
 		" " +
 		className;
 
