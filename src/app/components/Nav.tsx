@@ -13,7 +13,7 @@ export default function Nav() {
 	const { toggleTheme, isLight } = useTheme();
 
 	return (
-		<nav className="w-full flex flex-row justify-between bg-[#373B53] ">
+		<nav className="w-full flex flex-row justify-between bg-[#373B53] navbar">
 			<Link href={"/"}>
 				<Image src={logoIcon} alt="This is the logo of the application" />
 			</Link>

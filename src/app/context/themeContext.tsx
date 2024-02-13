@@ -18,14 +18,14 @@ type ThemeContextType = {
 };
 
 const defaultState = {
-	isLight: false,
+	isLight: true,
 	toggleTheme: () => {},
 };
 
 const ThemeContext = createContext<ThemeContextType>(defaultState);
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-	const [isLight, setIsLight] = useState<boolean>(false);
+	const [isLight, setIsLight] = useState<boolean>(true);
 
 	// useEffect(() => {
 	// 	const storedThemePreference = localStorage.getItem("isLightTheme");
