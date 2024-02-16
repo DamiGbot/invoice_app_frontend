@@ -59,9 +59,9 @@ export default function InvoiceList() {
 								isLight ? "text-[#888EB0]" : "text-[#DFE3FA]"
 							}`}
 						>
-							{!isMobile && "There are "}{" "}
-							{data.length === 0 ? "No" : data.length} {!isMobile && "total "}{" "}
-							invoices
+							{!isMobile && data.length > 0 && "There are "}{" "}
+							{data.length === 0 ? "No" : data.length}{" "}
+							{!isMobile && data.length > 0 && "total "} invoices
 						</p>
 					</div>
 
@@ -74,14 +74,16 @@ export default function InvoiceList() {
 							>
 								Filter {!isMobile && "by status "}{" "}
 							</p>
-							<span className="ml-[12px]">
+							<span className={`ml-[12px]`}>
 								<Image src={arrowDown} alt="arrow Down" />
 							</span>
 						</div>
 
 						<Link
 							href="/invoices/create"
-							className="bg-[#7C5DFA] flex items-center p-[8px] rounded-[24px] ml-[18px] gap-[8px]"
+							className={`bg-[#7C5DFA] flex items-center p-[8px] rounded-[24px] gap-[8px] ${
+								isMobile ? "ml-[18px]" : "ml-[40px]"
+							}`}
 						>
 							<div className="bg-[#FFFFFF] w-[32px] h-[32px] rounded-full flex items-center justify-center">
 								<Image src={plus} alt="d" />
@@ -113,12 +115,16 @@ export default function InvoiceList() {
 							There is nothing here
 						</p>
 						<p
-							className={`font-medium text-[15px] tracking-[-0.25px]  ${
+							className={`font-medium text-[12px] tracking-[-0.25px]  ${
 								isLight ? "text-[#888EB0]" : "text-[#DFE3FA]"
 							} leading-[15px]`}
 						>
-							Create an invoice by cliking the <br />
-							<span className="font-bold">New</span> button and get started
+							Create {isMobile && "an "} {!isMobile && "a new "} invoice by
+							cliking the <br />
+							<span className="font-bold">
+								New {!isMobile && "Invoice "}{" "}
+							</span>{" "}
+							button and get started
 						</p>
 					</div>
 				) : (
@@ -126,9 +132,9 @@ export default function InvoiceList() {
 						if (isMobile) {
 							return (
 								<Card
-									className={`${index === data.length - 1 ? "mb-[6px]" : ""} ${
-										isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"
-									}`}
+									className={`p-[24px] ${
+										index === data.length - 1 ? "mb-[6px]" : ""
+									} ${isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"}`}
 									key={item.id}
 									onClick={() => invoiceClickHanlder(item.id)}
 								>
@@ -188,7 +194,7 @@ export default function InvoiceList() {
 						} else {
 							return (
 								<Card
-									className={`flex justify-between items-center ${
+									className={`flex justify-between items-center p-[24px] ${
 										index === data.length - 1 ? "mb-[6px]" : ""
 									} ${isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"}`}
 									key={item.id}

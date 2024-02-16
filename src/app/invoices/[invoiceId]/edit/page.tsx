@@ -8,14 +8,16 @@ import { InvoiceParams } from "@/app/types/Params";
 import data from "../../../helpers/data.json";
 import { Invoice } from "@/app/types/Invoice";
 
-import { useFormik } from "formik";
 import InvoiceForm from "@/app/components/InvoiceForm";
+import InvoiceActions from "@/app/components/InvoiceActions";
+import { useResponsive } from "@/app/context/ResponsiveContext";
 
 type EditInvoice = {
 	params: InvoiceParams;
 };
 
 export default function EditInvoice({ params }: EditInvoice) {
+	const { isMobile } = useResponsive();
 	const { isLight } = useTheme();
 
 	useEffect(() => {
@@ -46,6 +48,7 @@ export default function EditInvoice({ params }: EditInvoice) {
 			</p>
 
 			<InvoiceForm invoiceData={invoiceData} />
+			{!isMobile && <InvoiceActions params={params} className="flex" />}
 		</section>
 	);
 }
