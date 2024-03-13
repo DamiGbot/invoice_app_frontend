@@ -78,9 +78,7 @@ export default function InvoiceLayout({
 	if (!isMobile) {
 		invoiceActions = (
 			<div
-				className={`${
-					isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"
-				} p-[24px] flex justify-between items-center font-bold text-[12px] tracking-[-0.25px] leading-[15px]`}
+				className={` p-[24px] flex justify-between items-center font-bold text-[12px] tracking-[-0.25px] leading-[15px]`}
 			>
 				<Button
 					onClick={cancelHandler}
