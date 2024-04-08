@@ -55,6 +55,16 @@ const decodeToken = (token: string) => {
 	}
 };
 
+export const getNameIdentifierFromToken = (token: string): string | null => {
+	const payload = decodeToken(token);
+	if (payload) {
+		// Access the nameidentifier using its full URI
+		const nameIdentifier = payload[process.env.NEXT_PUBLIC_NAME_IDENTIFIER];
+		return nameIdentifier;
+	}
+	return null;
+};
+
 export const isTokenValid = (token: string) => {
 	const payload = decodeToken(token);
 	const expectedIssuer = process.env.NEXT_PUBLIC_ISSUER_VAL;

@@ -4,12 +4,17 @@ import apiInstance from "@/app/api/axios";
 import axios from "axios";
 import { LoginData } from "@/app/types/Auth";
 import { RootState } from "../../store";
-import { isTokenValid, refreshAccessToken } from "@/app/helpers/refreshToken";
+import {
+	isTokenValid,
+	refreshAccessToken,
+	getNameIdentifierFromToken,
+} from "@/app/helpers/refreshToken";
 
 interface AuthState {
 	isLoggedIn: boolean;
 	loading: boolean;
 	error: string;
+	userId: string | null;
 	// Including refresh token in the state if needed for managing session renewal.
 	// In a real app, consider storing tokens more securely and not directly in the Redux store.
 }
@@ -18,6 +23,7 @@ const initialState: AuthState = {
 	isLoggedIn: false,
 	loading: false,
 	error: "",
+	userId: null,
 };
 
 export const initialCheck = createAsyncThunk(
@@ -28,11 +34,14 @@ export const initialCheck = createAsyncThunk(
 			// If already logged in, no need to check again
 			return true;
 		}
-
 		const token = localStorage.getItem("accessToken");
 		if (token && isTokenValid(token)) {
 			return true;
 		} else {
+			const refresh = localStorage.getItem("accessToken");
+			if (refresh === null) {
+				return false;
+			}
 			await refreshAccessToken();
 
 			const newToken = localStorage.getItem("accessToken");
@@ -89,15 +98,19 @@ const authSlice = createSlice({
 	extraReducers: (builder) => {
 		builder
 			.addCase(initialCheck.fulfilled, (state, action) => {
+				const token = localStorage.getItem("accessToken");
 				state.isLoggedIn = action.payload;
+				state.userId = getNameIdentifierFromToken(token);
 				// You might want to update other parts of the state based on this check
 			})
 			.addCase(login.pending, (state) => {
 				state.loading = true;
 			})
 			.addCase(login.fulfilled, (state, action) => {
+				console.log(action);
 				state.loading = false;
 				state.isLoggedIn = true;
+				state.userId = action.payload.userId;
 				// Optionally update state based on response
 			})
 			.addCase(login.rejected, (state, action: PayloadAction<any>) => {

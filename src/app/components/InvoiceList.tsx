@@ -6,7 +6,7 @@ import Image from "next/image";
 import arrowDown from "../../../public/assets/icon-arrow-down.svg";
 import arrowRight from "../../../public/assets/icon-arrow-right.svg";
 import plus from "../../../public/assets/icon-plus.svg";
-import data from "../helpers/data.json";
+// import data from "../helpers/data.json";
 import illustrationEmpty from "../../../public/assets/illustration-empty.svg";
 
 import Card from "./Card";
@@ -17,6 +17,12 @@ import { formatDate } from "../helpers/formatDate";
 import Link from "next/link";
 import { useResponsive } from "../context/ResponsiveContext";
 
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/lib/store";
+import { useEffect, useState } from "react";
+import apiInstance from "../api/axios";
+import axios from "axios";
+
 export default function InvoiceList() {
 	// using this to test the no invoice state, remember to delete this
 	// data.length = 0;
@@ -24,12 +30,53 @@ export default function InvoiceList() {
 	const router = useRouter();
 	const { isMobile, isTablet, isDesktop } = useResponsive();
 	const { isLight } = useTheme();
+	const [data, setData] = useState<Invoice[]>([]);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string | null>(null);
+	const { userId } = useSelector((state: RootState) => state.auth);
+
+	useEffect(() => {
+		const fetchInvoices = async () => {
+			try {
+				const accessToken = localStorage.getItem("accessToken");
+				const response = await apiInstance.get(`/invoice/${userId}`, {
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				});
+				console.log(response.data);
+
+				if (response.data.result === null) {
+					setData([]);
+				} else {
+					setData(response.data.result);
+				}
+
+				setLoading(false);
+			} catch (err) {
+				if (axios.isAxiosError(err) && err.response) {
+					setError(
+						err.response.data.message ||
+							"An error occurred while fetching invoices."
+					);
+				} else {
+					setError("An unknown error occurred");
+				}
+				setLoading(false);
+			}
+		};
+
+		fetchInvoices();
+	}, [userId]);
 
 	const invoiceClickHanlder = (id: string) => {
 		console.log("working");
 
 		router.push(`/invoices/${id}`);
 	};
+
+	if (loading) return <div>Loading...</div>;
+	if (error) return <div>Error: {error}</div>;
 
 	return (
 		<>
