@@ -11,12 +11,13 @@ import { InvoiceParams } from "@/app/types/Params";
 import { useResponsive } from "@/app/context/ResponsiveContext";
 
 import InvoiceActions from "@/app/components/InvoiceActions";
+import withAuth from "@/app/components/withAuth";
 
 type InoviceDetailsProps = {
 	params: InvoiceParams;
 };
 
-export default function InvoiceDetails({ params }: InoviceDetailsProps) {
+const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 	const { isLight } = useTheme();
 	const { isMobile } = useResponsive();
 
@@ -519,4 +520,6 @@ export default function InvoiceDetails({ params }: InoviceDetailsProps) {
 			{invoiceDataCard}
 		</>
 	);
-}
+};
+
+export default withAuth(InvoiceDetails);

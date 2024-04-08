@@ -5,8 +5,9 @@ import { useEffect } from "react";
 import { useTheme } from "@/app/context/themeContext";
 import InvoiceForm from "@/app/components/InvoiceForm";
 import { Invoice } from "@/app/types/Invoice";
+import withAuth from "@/app/components/withAuth";
 
-export default function CreateInvoice() {
+const CreateInvoice = () => {
 	const { isLight } = useTheme();
 
 	useEffect(() => {
@@ -60,4 +61,6 @@ export default function CreateInvoice() {
 			<InvoiceForm invoiceData={emptyInvoice} />
 		</section>
 	);
-}
+};
+
+export default withAuth(CreateInvoice);

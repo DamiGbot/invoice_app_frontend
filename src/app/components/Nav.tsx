@@ -17,7 +17,7 @@ export default function Nav() {
 	if (isDesktop) {
 		return (
 			<nav className="h-screen left-0 top-0 flex flex-col rounded-r-[20px] justify-between bg-[#373B53] navbar">
-				<Link href={"/"}>
+				<Link href={"/invoices"}>
 					<Image src={logoIcon} alt="This is the logo of the application" />
 				</Link>
 				<div className="flex flex-col items-center">

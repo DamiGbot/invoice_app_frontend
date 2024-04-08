@@ -12,11 +12,11 @@ import InvoiceForm from "@/app/components/InvoiceForm";
 import InvoiceActions from "@/app/components/InvoiceActions";
 import { useResponsive } from "@/app/context/ResponsiveContext";
 
-type EditInvoice = {
+type EditInvoiceProps = {
 	params: InvoiceParams;
 };
 
-export default function EditInvoice({ params }: EditInvoice) {
+const EditInvoice = ({ params }: EditInvoiceProps) => {
 	const { isMobile } = useResponsive();
 	const { isLight } = useTheme();
 
@@ -51,8 +51,9 @@ export default function EditInvoice({ params }: EditInvoice) {
 			{!isMobile && <InvoiceActions params={params} className="flex" />}
 		</section>
 	);
-}
+};
 
+export default EditInvoice;
 {
 	/* <form onSubmit={formik.handleSubmit}>
 				<div>
