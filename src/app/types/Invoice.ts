@@ -14,6 +14,7 @@ export type Item = {
 
 export type Invoice = {
 	id: string;
+	frontendId: string;
 	createdAt: string;
 	paymentDue: string;
 	description: string;
@@ -27,4 +28,15 @@ export type Invoice = {
 	total: number;
 };
 
+// public string FrontendId { get; set; }
 
+export type InvoiceRequestDto = {
+	Description: string;
+	PaymentTerms: number;
+	ClientName: string;
+	ClientEmail: string;
+	isReady: boolean;
+	SenderAddress: Address;
+	ClientAddress: Address;
+	Items: Item[];
+};

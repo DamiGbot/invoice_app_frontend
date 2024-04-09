@@ -21,6 +21,7 @@ import {
 	refreshAccessToken,
 } from "@/app/helpers/refreshToken";
 import { unwrapResult } from "@reduxjs/toolkit";
+import LoadingComponent from "@/app/components/UI/Loading";
 
 const Login: React.FC = () => {
 	const dispatch = useDispatch();
@@ -88,6 +89,8 @@ const Login: React.FC = () => {
 	const goBackHandler = () => {
 		router.push("/");
 	};
+
+	if (loading) return <LoadingComponent />;
 
 	return (
 		<Wrapper>

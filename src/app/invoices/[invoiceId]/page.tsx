@@ -1,10 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import apiInstance from "../../api/axios";
+import axios from "axios";
+
 import { useTheme } from "@/app/context/themeContext";
 
 import Card from "@/app/components/Card";
 import InvoiceStatus from "@/app/components/UI/InvoiceStatus";
-import data from "../../helpers/data.json";
 import { Invoice } from "@/app/types/Invoice";
 import { formatDate } from "@/app/helpers/formatDate";
 import { InvoiceParams } from "@/app/types/Params";
@@ -12,6 +15,10 @@ import { useResponsive } from "@/app/context/ResponsiveContext";
 
 import InvoiceActions from "@/app/components/InvoiceActions";
 import withAuth from "@/app/components/withAuth";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import LoadingComponent from "@/app/components/UI/Loading";
+import ErrorModal from "@/app/components/UI/Error";
 
 type InoviceDetailsProps = {
 	params: InvoiceParams;
@@ -20,9 +27,89 @@ type InoviceDetailsProps = {
 const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 	const { isLight } = useTheme();
 	const { isMobile } = useResponsive();
+	const router = useRouter();
+	const [invoiceData, setData] = useState<Invoice | null>(null);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string | null>(null);
+	const currentId = params.invoiceId;
 
 	// filter data by id
-	const invoiceData = data.find((el) => el.id === params.invoiceId) as Invoice;
+	// const invoiceData = data.find((el) => el.id === ) as Invoice;
+
+	useEffect(() => {
+		const fetchInvoices = async () => {
+			try {
+				const accessToken = localStorage.getItem("accessToken");
+				const response = await apiInstance.get(`/invoice/${currentId}`, {
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				});
+				console.log(response.data);
+
+				setData(response.data.result);
+
+				setLoading(false);
+			} catch (err) {
+				if (axios.isAxiosError(err) && err.response) {
+					setError(
+						err.response.data.message ||
+							"An error occurred while fetching invoices."
+					);
+				} else {
+					setError("An unknown error occurred");
+				}
+				setLoading(false);
+			}
+		};
+
+		fetchInvoices();
+	}, [currentId]);
+
+	const markAsPaidRequest = async () => {
+		setLoading(true);
+		try {
+			console.log(currentId);
+			const accessToken = localStorage.getItem("accessToken");
+			const response = await apiInstance.post(
+				`/invoice/${currentId}/mark-as-paid`,
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				}
+			);
+			console.log(response.data);
+
+			if (invoiceData) {
+				setData({ ...invoiceData, status: "paid" }); // Update the status of the invoice to 'paid'
+			}
+			setLoading(false);
+		} catch (err) {
+			if (axios.isAxiosError(err) && err.response) {
+				setError(
+					err.response.data.message ||
+						"An error occurred while fetching invoices."
+				);
+			} else {
+				setError("An unknown error occurred");
+			}
+			setLoading(false);
+		}
+		// window.location.reload();
+	};
+
+	if (loading) return <LoadingComponent />;
+
+	if (invoiceData === null) {
+		return (
+			<div>
+				{error && <ErrorModal errorMessage={error} />}
+				Please go back to Invoice Page: <Link href="/invoices">click here</Link>
+			</div>
+		);
+	}
 	// console.log(isMobile);
 
 	let invoiceDataCard = (
@@ -37,7 +124,7 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 					} leading-[15px]`}
 				>
 					<span className="text-[#7E88C3]">#</span>
-					{invoiceData.id}
+					{invoiceData?.frontendId}
 				</p>
 				<p
 					className={`font-medium text-[12px] tracking-[-0.25px]  ${
@@ -212,7 +299,7 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 							} leading-[24px]`}
 						>
 							<span className="text-[#7E88C3]">#</span>
-							{invoiceData.id}
+							{invoiceData?.frontendId}
 						</p>
 						<p
 							className={`font-medium text-[12px] tracking-[-0.25px]  ${
@@ -491,7 +578,7 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 					>
 						Status
 					</p>
-					<InvoiceStatus status="pending" />
+					<InvoiceStatus status={`${invoiceData.status}`} />
 				</Card>
 			) : (
 				<Card
@@ -509,10 +596,16 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 						>
 							Status
 						</p>
-						<InvoiceStatus status="pending" />
+						<InvoiceStatus status={`${invoiceData.status}`} />
 					</div>
 
-					<InvoiceActions className="gap-[0.5rem]" params={params} />
+					<InvoiceActions
+						className="gap-[0.5rem]"
+						params={params}
+						markAsPaidHandler={markAsPaidRequest}
+						status={invoiceData.status}
+						frontendId={invoiceData.frontendId}
+					/>
 				</Card>
 			)}
 

@@ -22,6 +22,7 @@ import { RootState } from "@/app/lib/store";
 import { useEffect, useState } from "react";
 import apiInstance from "../api/axios";
 import axios from "axios";
+import LoadingComponent from "./UI/Loading";
 
 export default function InvoiceList() {
 	// using this to test the no invoice state, remember to delete this
@@ -39,7 +40,7 @@ export default function InvoiceList() {
 		const fetchInvoices = async () => {
 			try {
 				const accessToken = localStorage.getItem("accessToken");
-				const response = await apiInstance.get(`/invoice/${userId}`, {
+				const response = await apiInstance.get(`/invoice/get-all-invoice`, {
 					headers: {
 						Authorization: `Bearer ${accessToken}`,
 					},
@@ -75,8 +76,8 @@ export default function InvoiceList() {
 		router.push(`/invoices/${id}`);
 	};
 
-	if (loading) return <div>Loading...</div>;
-	if (error) return <div>Error: {error}</div>;
+	if (loading) return <LoadingComponent />;
+	// if (error) return <div>Error: {error}</div>;
 
 	return (
 		<>
@@ -152,28 +153,32 @@ export default function InvoiceList() {
 				{/* I want to have conditional rendering based on the data length */}
 
 				{data.length === 0 ? (
-					<div className="text-center h-full flex flex-1 flex-col justify-center items-center">
-						<Image src={illustrationEmpty} alt="there is no ivoice" />
-						<p
-							className={`mt-[40px] mb-[24px] font-bold text-[20px] tracking-[-0.63px] ${
-								isLight ? "text-[#0C0E16]" : "text-[#fff]"
-							} `}
-						>
-							There is nothing here
-						</p>
-						<p
-							className={`font-medium text-[12px] tracking-[-0.25px]  ${
-								isLight ? "text-[#888EB0]" : "text-[#DFE3FA]"
-							} leading-[15px]`}
-						>
-							Create {isMobile && "an "} {!isMobile && "a new "} invoice by
-							cliking the <br />
-							<span className="font-bold">
-								New {!isMobile && "Invoice "}{" "}
-							</span>{" "}
-							button and get started
-						</p>
-					</div>
+					<>
+						<div className="text-center h-full flex flex-1 flex-col justify-center items-center">
+							<Image src={illustrationEmpty} alt="there is no ivoice" />
+							<p
+								className={`mt-[40px] mb-[24px] font-bold text-[20px] tracking-[-0.63px] ${
+									isLight ? "text-[#0C0E16]" : "text-[#fff]"
+								} `}
+							>
+								There is nothing here
+							</p>
+							<p
+								className={`font-medium text-[12px] tracking-[-0.25px]  ${
+									isLight ? "text-[#888EB0]" : "text-[#DFE3FA]"
+								} leading-[15px]`}
+							>
+								Create {isMobile && "an "} {!isMobile && "a new "} invoice by
+								cliking the <br />
+								<span className="font-bold">
+									New {!isMobile && "Invoice "}{" "}
+								</span>{" "}
+								button and get started
+							</p>
+						</div>
+
+						{error && <div>Error: {error}</div>}
+					</>
 				) : (
 					data.map((item: Invoice, index) => {
 						if (isMobile) {
@@ -195,7 +200,7 @@ export default function InvoiceList() {
 												}  leading-[15px]`}
 											>
 												<span className="text-[#7E88C3]">#</span>
-												{item.id}
+												{item.frontendId}
 											</p>
 											<p
 												className={`font-medium text-[12px] tracking-[-0.25px]  ${
@@ -253,7 +258,7 @@ export default function InvoiceList() {
 										}  leading-[15px]`}
 									>
 										<span className="text-[#7E88C3]">#</span>
-										{item.id}
+										{item.frontendId}
 									</p>
 									<p
 										className={`font-medium text-[12px] tracking-[-0.25px]  ${
