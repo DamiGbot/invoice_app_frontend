@@ -67,6 +67,7 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 	}, [currentId]);
 
 	const markAsPaidRequest = async () => {
+		console.log(loading);
 		setLoading(true);
 		try {
 			console.log(currentId);
@@ -602,7 +603,7 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 					<InvoiceActions
 						className="gap-[0.5rem]"
 						params={params}
-						markAsPaidHandler={markAsPaidRequest}
+						markAsPaidRequest={markAsPaidRequest}
 						status={invoiceData.status}
 						frontendId={invoiceData.frontendId}
 					/>

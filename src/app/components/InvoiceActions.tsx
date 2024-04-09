@@ -92,10 +92,10 @@ export default function InvoiceActions({
 		router.push(`/invoices/${currentId}`);
 	};
 
-	const markAsPaidHandler = () => {
-		console.log(currentId);
-
-		markAsPaidRequest?.();
+	const markAsPaidHandler = async () => {
+		// await markAsPaidRequest?.();
+		console.log(markAsPaidRequest);
+		await markAsPaidRequest?.();
 	};
 
 	if (loading) return <LoadingComponent />;

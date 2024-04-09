@@ -8,12 +8,38 @@ import Button from "./UI/Button";
 import iconDelete from "../../../public/assets/icon-delete.svg";
 import { Invoice } from "../types/Invoice";
 
+import { useDispatch } from "@/app/hooks/useDispatch";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/lib/store";
+import {
+	addItem,
+	deleteItem,
+	updateInvoice,
+	submitInvoice,
+	resetInvoice,
+} from "@/app/lib/features/invoices/invoiceSlice";
+
 type InvoiceFormProps = {
 	invoiceData: Invoice;
 };
 
 export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
+	const dispatch = useDispatch();
 	const { isLight } = useTheme();
+	const { items } = useSelector(
+		(state: RootState) => state.invoice.currentInvoice
+	);
+
+	const handleAddItem = () => {
+		dispatch(addItem());
+	};
+
+	const handleItemChange = (index: number, field: keyof Item, value: any) => {
+		const updatedItem = { ...items[index], [field]: value };
+		// Calculate the total for the item
+		updatedItem.total = updatedItem.quantity * updatedItem.price;
+		dispatch(updateItem({ index, item: updatedItem }));
+	};
 
 	return (
 		<form>
@@ -27,7 +53,16 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 					name="Sender Address Street"
 					type="text"
 					value={invoiceData.senderAddress.street}
-					onChange={() => {}}
+					onChange={(e) =>
+						dispatch(
+							updateInvoice({
+								senderAddress: {
+									...invoiceData.senderAddress,
+									street: e.target.value,
+								},
+							})
+						)
+					}
 				/>
 
 				<div className="flex gap-[23px]">
@@ -36,7 +71,16 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 						name="Sender Address City"
 						type="text"
 						value={invoiceData.senderAddress.city}
-						onChange={() => {}}
+						onChange={(e) =>
+							dispatch(
+								updateInvoice({
+									senderAddress: {
+										...invoiceData.senderAddress,
+										city: e.target.value,
+									},
+								})
+							)
+						}
 					/>
 
 					<InputField
@@ -44,7 +88,16 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 						name="Sender Address Post Code"
 						type="text"
 						value={invoiceData.senderAddress.postCode}
-						onChange={() => {}}
+						onChange={(e) =>
+							dispatch(
+								updateInvoice({
+									senderAddress: {
+										...invoiceData.senderAddress,
+										postCode: e.target.value,
+									},
+								})
+							)
+						}
 					/>
 				</div>
 
@@ -53,7 +106,16 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 					name="Sender Address Country"
 					type="text"
 					value={invoiceData.senderAddress.country}
-					onChange={() => {}}
+					onChange={(e) =>
+						dispatch(
+							updateInvoice({
+								senderAddress: {
+									...invoiceData.senderAddress,
+									country: e.target.value,
+								},
+							})
+						)
+					}
 				/>
 			</div>
 
@@ -67,7 +129,13 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 					name="Client's Name"
 					type="text"
 					value={invoiceData.clientName}
-					onChange={() => {}}
+					onChange={(e) =>
+						dispatch(
+							updateInvoice({
+								clientName: e.target.value,
+							})
+						)
+					}
 				/>
 
 				<InputField
@@ -75,7 +143,13 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 					name="Client's Email"
 					type="email"
 					value={invoiceData.clientEmail}
-					onChange={() => {}}
+					onChange={(e) =>
+						dispatch(
+							updateInvoice({
+								clientEmail: e.target.value,
+							})
+						)
+					}
 				/>
 
 				<InputField
@@ -83,7 +157,16 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 					name="Client's Address Street"
 					type="text"
 					value={invoiceData.clientAddress.street}
-					onChange={() => {}}
+					onChange={(e) =>
+						dispatch(
+							updateInvoice({
+								clientAddress: {
+									...invoiceData.clientAddress,
+									street: e.target.value,
+								},
+							})
+						)
+					}
 				/>
 
 				<div className="flex gap-[23px]">
@@ -92,7 +175,16 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 						name="Client's Address City"
 						type="text"
 						value={invoiceData.clientAddress.city}
-						onChange={() => {}}
+						onChange={(e) =>
+							dispatch(
+								updateInvoice({
+									clientAddress: {
+										...invoiceData.clientAddress,
+										city: e.target.value,
+									},
+								})
+							)
+						}
 					/>
 
 					<InputField
@@ -100,7 +192,16 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 						name="Client's Address Post Code"
 						type="text"
 						value={invoiceData.clientAddress.postCode}
-						onChange={() => {}}
+						onChange={(e) =>
+							dispatch(
+								updateInvoice({
+									clientAddress: {
+										...invoiceData.clientAddress,
+										postCode: e.target.value,
+									},
+								})
+							)
+						}
 					/>
 				</div>
 
@@ -109,7 +210,16 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 					name="Client's Address Country"
 					type="text"
 					value={invoiceData.clientAddress.country}
-					onChange={() => {}}
+					onChange={(e) =>
+						dispatch(
+							updateInvoice({
+								clientAddress: {
+									...invoiceData.clientAddress,
+									country: e.target.value,
+								},
+							})
+						)
+					}
 				/>
 
 				<InputField
@@ -117,15 +227,27 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 					name="Invoice Date"
 					type="date"
 					value={invoiceData.createdAt}
-					onChange={() => {}}
+					onChange={(e) =>
+						dispatch(
+							updateInvoice({
+								createdAt: e.target.value,
+							})
+						)
+					}
 				/>
 
 				<InputField
 					label="Payment Terms"
 					name="Payment Terms"
-					type="dropdown"
-					value={invoiceData.createdAt}
-					onChange={() => {}}
+					type="number"
+					value={invoiceData.paymentTerms}
+					onChange={(e) =>
+						dispatch(
+							updateInvoice({
+								paymentTerms: e.target.value,
+							})
+						)
+					}
 				/>
 
 				<InputField
@@ -133,7 +255,13 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 					name="Project Description"
 					type="text"
 					value={invoiceData.description}
-					onChange={() => {}}
+					onChange={(e) =>
+						dispatch(
+							updateInvoice({
+								description: e.target.value,
+							})
+						)
+					}
 				/>
 			</div>
 
@@ -150,7 +278,9 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 								name={`Item Name ${index}`}
 								type="text"
 								value={item.name}
-								onChange={() => {}}
+								onChange={(e) =>
+									handleItemChange(index, "name", e.target.value)
+								}
 							/>
 
 							<div className="flex w-full gap-[16px]">
@@ -174,7 +304,9 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 											name={`Qty ${index}`}
 											type="number"
 											value={item.quantity}
-											onChange={() => {}}
+											onChange={(e) =>
+												handleItemChange(index, "quantity", +e.target.value)
+											}
 										/>
 									</div>
 
@@ -197,7 +329,9 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 											name={`Price ${index}`}
 											type="number"
 											value={item.price}
-											onChange={() => {}}
+											onChange={(e) =>
+												handleItemChange(index, "price", +e.target.value)
+											}
 										/>
 									</div>
 								</div>
@@ -218,7 +352,11 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 
 									<div className="flex flex-col w-full items-end">
 										<div className="h-[37px]"></div>
-										<Image src={iconDelete} alt="delete icon" />
+										<Image
+											src={iconDelete}
+											alt="delete icon"
+											onClick={() => dispatch(deleteItem(index))}
+										/>
 									</div>
 								</div>
 							</div>
@@ -232,9 +370,7 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 							? "text-[#7E88C3] bg-[#F9FAFE]"
 							: "text-[#888EB0] bg-[#252945]"
 					} leading-[15px]`}
-					onClick={() => {
-						console.log("Button Clicked");
-					}}
+					onClick={handleAddItem}
 					type="button"
 				>
 					+Add New Item

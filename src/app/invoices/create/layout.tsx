@@ -10,6 +10,17 @@ import Button from "@/app/components/UI/Button";
 import { InvoiceParams } from "@/app/types/Params";
 import { useResponsive } from "@/app/context/ResponsiveContext";
 
+import { useSelector } from "react-redux";
+import { useDispatch } from "@/app/hooks/useDispatch";
+import { RootState } from "@/app/lib/store";
+import {
+	addItem,
+	deleteItem,
+	updateInvoice,
+	submitInvoice,
+	resetInvoice,
+} from "@/app/lib/features/invoices/invoiceSlice";
+
 type InvoiceLayoutProps = {
 	children: React.ReactNode;
 	params: InvoiceParams;
@@ -20,6 +31,8 @@ export default function InvoiceLayout({
 	params,
 }: InvoiceLayoutProps) {
 	const router = useRouter();
+	const { currentInvoice } = useSelector((state: RootState) => state.invoice);
+	const dispatch = useDispatch();
 	const { isLight } = useTheme();
 	const { isMobile } = useResponsive();
 

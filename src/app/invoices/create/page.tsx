@@ -7,8 +7,12 @@ import InvoiceForm from "@/app/components/InvoiceForm";
 import { Invoice } from "@/app/types/Invoice";
 import withAuth from "@/app/components/withAuth";
 
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/lib/store";
+
 const CreateInvoice = () => {
 	const { isLight } = useTheme();
+	const { currentInvoice } = useSelector((state: RootState) => state.invoice);
 
 	useEffect(() => {
 		const mainElement = document.querySelector("main");
@@ -26,6 +30,7 @@ const CreateInvoice = () => {
 	const emptyInvoice: Invoice = {
 		id: "",
 		createdAt: "",
+		frontendId: "",
 		paymentDue: "",
 		description: "",
 		paymentTerms: 0, // Assuming 0 is a sensible default for your application
@@ -58,7 +63,7 @@ const CreateInvoice = () => {
 				New Invoice
 			</p>
 
-			<InvoiceForm invoiceData={emptyInvoice} />
+			<InvoiceForm invoiceData={currentInvoice} />
 		</section>
 	);
 };
