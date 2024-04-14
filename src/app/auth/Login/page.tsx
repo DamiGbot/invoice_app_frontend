@@ -170,7 +170,7 @@ const Login: React.FC = () => {
 					<Link
 						href="/auth/Register"
 						className={`underline ${
-							isLight ? "text-gray-300" : "text-gray-300"
+							isLight ? "text-gray-400" : "text-gray-400"
 						} ${isLight ? "hover:text-black" : "hover:text-white"}`}
 					>
 						Register
@@ -180,7 +180,7 @@ const Login: React.FC = () => {
 						<Link
 							href="/auth/Register"
 							className={`underline ${
-								isLight ? "text-gray-300" : "text-gray-300"
+								isLight ? "text-gray-400" : "text-gray-400"
 							} ${isLight ? "hover:text-black" : "hover:text-white"} mr-4`}
 						>
 							Forgot your password

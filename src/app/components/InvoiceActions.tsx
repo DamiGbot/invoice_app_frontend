@@ -18,9 +18,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "@/app/hooks/useDispatch";
 import { RootState } from "@/app/lib/store";
 import {
-	submitInvoice,
 	resetInvoice,
-	setValidationErrors,
 	clearValidationErrors,
 } from "@/app/lib/features/invoices/invoiceSlice";
 import ErrorModal from "./UI/Error";
@@ -29,6 +27,7 @@ type InvoiceActionsProps = {
 	params: InvoiceParams;
 	className: string;
 	markAsPaidRequest?: () => Promise<void>;
+	markAsPendingRequest?: () => Promise<void>;
 	status?: string;
 	frontendId?: string;
 };
@@ -39,6 +38,7 @@ export default function InvoiceActions({
 	markAsPaidRequest,
 	status,
 	frontendId,
+	markAsPendingRequest,
 }: InvoiceActionsProps) {
 	// console.log(params);
 
@@ -142,6 +142,10 @@ export default function InvoiceActions({
 		await markAsPaidRequest?.();
 	};
 
+	const markAsPendingHandler = async () => {
+		await markAsPendingRequest?.();
+	};
+
 	if (loading) return <LoadingComponent />;
 
 	if (error !== null) {
@@ -243,6 +247,15 @@ export default function InvoiceActions({
 							className="bg-[#7C5DFA] text-[#FFFFFF]"
 						>
 							Mark as Paid
+						</Button>
+					)}
+
+					{status !== null && status?.toLowerCase() === "draft" && (
+						<Button
+							onClick={markAsPendingHandler}
+							className="bg-[#7C5DFA] text-[#FFFFFF]"
+						>
+							Mark as Pending
 						</Button>
 					)}
 				</div>

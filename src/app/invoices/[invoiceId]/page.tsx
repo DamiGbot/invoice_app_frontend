@@ -84,7 +84,42 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 			console.log(response.data);
 
 			if (invoiceData) {
-				setData({ ...invoiceData, status: "paid" }); // Update the status of the invoice to 'paid'
+				setData({ ...invoiceData, status: "paid" });
+			}
+			setLoading(false);
+		} catch (err) {
+			if (axios.isAxiosError(err) && err.response) {
+				setError(
+					err.response.data.message ||
+						"An error occurred while fetching invoices."
+				);
+			} else {
+				setError("An unknown error occurred");
+			}
+			setLoading(false);
+		}
+		// window.location.reload();
+	};
+
+	const markAsPendingRequest = async () => {
+		console.log(loading);
+		setLoading(true);
+		try {
+			console.log(currentId);
+			const accessToken = localStorage.getItem("accessToken");
+			const response = await apiInstance.post(
+				`/invoice/${currentId}/mark-as-pending`,
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				}
+			);
+			console.log(response.data);
+
+			if (invoiceData) {
+				setData({ ...invoiceData, status: "pending" });
 			}
 			setLoading(false);
 		} catch (err) {
@@ -604,6 +639,7 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 						className="gap-[0.5rem]"
 						params={params}
 						markAsPaidRequest={markAsPaidRequest}
+						markAsPendingRequest={markAsPendingRequest}
 						status={invoiceData.status}
 						frontendId={invoiceData.frontendId}
 					/>

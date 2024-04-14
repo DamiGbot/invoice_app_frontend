@@ -116,7 +116,7 @@ const Registration: React.FC = () => {
 					<Link
 						href="/auth/Login"
 						className={`underline ${
-							isLight ? "text-gray-300" : "text-gray-300"
+							isLight ? "text-gray-400" : "text-gray-400"
 						} ${isLight ? "hover:text-black" : "hover:text-white"}`}
 					>
 						Already registered?
