@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 
 import apiInstance from "../api/axios";
 import axios from "axios";
@@ -13,6 +14,15 @@ import { useTheme } from "@/app/context/themeContext";
 import { useResponsive } from "../context/ResponsiveContext";
 import { InvoiceParams } from "../types/Params";
 import LoadingComponent from "./UI/Loading";
+import { useSelector } from "react-redux";
+import { useDispatch } from "@/app/hooks/useDispatch";
+import { RootState } from "@/app/lib/store";
+import {
+	submitInvoice,
+	resetInvoice,
+	setValidationErrors,
+	clearValidationErrors,
+} from "@/app/lib/features/invoices/invoiceSlice";
 import ErrorModal from "./UI/Error";
 
 type InvoiceActionsProps = {
@@ -39,6 +49,9 @@ export default function InvoiceActions({
 	const { isMobile } = useResponsive();
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
+
+	const dispatch = useDispatch();
+	const { currentInvoice } = useSelector((state: RootState) => state.invoice);
 
 	const themes = `${isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"}`;
 
@@ -89,16 +102,56 @@ export default function InvoiceActions({
 	};
 
 	const cancelHandler = () => {
+		dispatch(resetInvoice());
+		dispatch(clearValidationErrors());
 		router.push(`/invoices/${currentId}`);
 	};
 
+	const saveChangesHandler = async () => {
+		setLoading(true);
+		try {
+			console.log(currentId);
+			const accessToken = localStorage.getItem("accessToken");
+			const response = await apiInstance.put(
+				`/invoice/edit/${currentId}`,
+				currentInvoice,
+				{
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				}
+			);
+			console.log(response.data);
+
+			setLoading(false);
+			router.replace(`/invoices/${currentId}`);
+		} catch (err) {
+			if (axios.isAxiosError(err) && err.response) {
+				setError(
+					err.response.data.message ||
+						"An error occurred while fetching invoices."
+				);
+			} else {
+				setError("An unknown error occurred");
+			}
+			setLoading(false);
+		}
+	};
+
 	const markAsPaidHandler = async () => {
-		// await markAsPaidRequest?.();
-		console.log(markAsPaidRequest);
 		await markAsPaidRequest?.();
 	};
 
 	if (loading) return <LoadingComponent />;
+
+	if (error !== null) {
+		return (
+			<div>
+				{error && <ErrorModal errorMessage={error} />}
+				Please go back to Invoice Page: <Link href="/invoices">click here</Link>
+			</div>
+		);
+	}
 
 	return (
 		<>
@@ -159,7 +212,7 @@ export default function InvoiceActions({
 						Cancel
 					</Button>
 					<Button
-						onClick={markAsPaidHandler}
+						onClick={saveChangesHandler}
 						className="bg-[#7C5DFA] text-[#FFFFFF]"
 					>
 						Save Changes

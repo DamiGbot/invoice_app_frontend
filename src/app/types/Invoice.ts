@@ -26,6 +26,7 @@ export type Invoice = {
 	clientAddress: Address;
 	items: Item[];
 	total: number;
+	isReady?: boolean;
 };
 
 // public string FrontendId { get; set; }

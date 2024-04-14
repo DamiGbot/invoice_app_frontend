@@ -1,9 +1,9 @@
 "use client";
-
+import React, { useState } from "react";
 import Image from "next/image";
 import { useTheme } from "@/app/context/themeContext";
 
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import arrowLeft from "../../../../public/assets/icon-arrow-left.svg";
 import Wrapper from "@/app/components/Wrapper";
 import Button from "@/app/components/UI/Button";
@@ -14,12 +14,13 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "@/app/hooks/useDispatch";
 import { RootState } from "@/app/lib/store";
 import {
-	addItem,
-	deleteItem,
-	updateInvoice,
 	submitInvoice,
 	resetInvoice,
+	setValidationErrors,
+	clearValidationErrors,
 } from "@/app/lib/features/invoices/invoiceSlice";
+import LoadingComponent from "@/app/components/UI/Loading";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 type InvoiceLayoutProps = {
 	children: React.ReactNode;
@@ -31,7 +32,9 @@ export default function InvoiceLayout({
 	params,
 }: InvoiceLayoutProps) {
 	const router = useRouter();
-	const { currentInvoice } = useSelector((state: RootState) => state.invoice);
+	const { currentInvoice, status, validationErrors } = useSelector(
+		(state: RootState) => state.invoice
+	);
 	const dispatch = useDispatch();
 	const { isLight } = useTheme();
 	const { isMobile } = useResponsive();
@@ -42,13 +45,114 @@ export default function InvoiceLayout({
 		router.back();
 	};
 
-	const markAsPaidHandler = () => {
-		router.push("/edit");
+	// Function to handle form submission
+	const handleSubmit = async (
+		e: React.FormEvent<HTMLFormElement>,
+		isReady: boolean
+	) => {
+		e.preventDefault();
+
+		if (validateForm()) {
+			const updatedInvoice = { ...currentInvoice, isReady: isReady };
+			const resultAction = await dispatch(submitInvoice(updatedInvoice));
+
+			const result = unwrapResult(resultAction);
+
+			if (result.isSuccess) {
+				if (Object.keys(validationErrors).length === 0) {
+					dispatch(clearValidationErrors());
+					router.push("/invoices");
+				}
+			}
+		}
 	};
 
-	const cancelHandler = () => {
-		router.push(`/invoices/${currentId}`);
+	const handleDiscard = () => {
+		dispatch(resetInvoice());
+		dispatch(clearValidationErrors());
+		router.push("/invoices");
 	};
+
+	const validateForm = () => {
+		let newErrors = {};
+
+		// Validating sender address fields
+		if (!currentInvoice.senderAddress.street.trim()) {
+			newErrors.senderAddressStreet = "Sender's street address is required.";
+		}
+		if (!currentInvoice.senderAddress.city.trim()) {
+			newErrors.senderAddressCity = "Sender's city is required.";
+		}
+		if (!currentInvoice.senderAddress.postCode.trim()) {
+			newErrors.senderAddressPostCode = "Sender's post code is required.";
+		}
+		if (!currentInvoice.senderAddress.country.trim()) {
+			newErrors.senderAddressCountry = "Sender's country is required.";
+		}
+
+		// Validating client address fields
+		if (!currentInvoice.clientAddress.street.trim()) {
+			newErrors.clientAddressStreet = "Client's street address is required.";
+		}
+		if (!currentInvoice.clientAddress.city.trim()) {
+			newErrors.clientAddressCity = "Client's city is required.";
+		}
+		if (!currentInvoice.clientAddress.postCode.trim()) {
+			newErrors.clientAddressPostCode = "Client's post code is required.";
+		}
+		if (!currentInvoice.clientAddress.country.trim()) {
+			newErrors.clientAddressCountry = "Client's country is required.";
+		}
+
+		// Validating client contact information
+		if (!currentInvoice.clientName.trim()) {
+			newErrors.clientName = "Client's name is required.";
+		}
+		if (!currentInvoice.clientEmail.trim()) {
+			newErrors.clientEmail = "Client's email is required.";
+		}
+
+		// Validating other invoice details
+		if (!currentInvoice.createdAt.trim()) {
+			newErrors.createdAt = "Invoice date is required.";
+		}
+		if (!currentInvoice.description.trim()) {
+			newErrors.description = "Project description is required.";
+		}
+		if (
+			isNaN(currentInvoice.paymentTerms) ||
+			currentInvoice.paymentTerms <= 0
+		) {
+			newErrors.paymentTerms = "Valid payment terms are required.";
+		}
+
+		// Check if there are any items added
+		if (currentInvoice.items.length === 0) {
+			newErrors.items = "At least one item must be added to the invoice.";
+		} else {
+			// Validate each item
+			currentInvoice.items.forEach((item, index) => {
+				const baseKey = `item${index}`;
+
+				if (!item.name.trim()) {
+					newErrors[`${baseKey}Name`] = `Name is required.`;
+				}
+				if (!item.quantity || item.quantity <= 0) {
+					newErrors[`${baseKey}Quantity`] = `Quantity must be greater than 0.`;
+				}
+				if (!item.price || item.price <= 0) {
+					newErrors[`${baseKey}Price`] = `Price must be greater than 0.`;
+				}
+			});
+		}
+
+		dispatch(setValidationErrors(newErrors));
+		return Object.keys(newErrors).length === 0;
+	};
+
+	if (status === "loading") {
+		return <LoadingComponent />;
+	}
 
 	let invoiceActions = (
 		<footer
@@ -57,7 +161,7 @@ export default function InvoiceLayout({
 			} p-[24px] flex justify-between items-center font-bold text-[12px] tracking-[-0.25px] leading-[15px]`}
 		>
 			<Button
-				onClick={cancelHandler}
+				onClick={handleDiscard}
 				createPage={true}
 				className={`px-[16px] ${
 					isLight
@@ -68,7 +172,7 @@ export default function InvoiceLayout({
 				Discard
 			</Button>
 			<Button
-				onClick={cancelHandler}
+				onClick={(e) => handleSubmit(e, false)}
 				createPage={true}
 				className={`px-[16px] ${
 					isLight
@@ -79,7 +183,7 @@ export default function InvoiceLayout({
 				Save as Draft
 			</Button>
 			<Button
-				onClick={markAsPaidHandler}
+				onClick={(e) => handleSubmit(e, true)}
 				createPage={true}
 				className="bg-[#7C5DFA] text-[#FFFFFF] px-[16px]"
 			>
@@ -94,7 +198,7 @@ export default function InvoiceLayout({
 				className={` p-[24px] flex justify-between items-center font-bold text-[12px] tracking-[-0.25px] leading-[15px]`}
 			>
 				<Button
-					onClick={cancelHandler}
+					onClick={handleDiscard}
 					createPage={true}
 					className={`px-[16px] ${
 						isLight
@@ -107,7 +211,7 @@ export default function InvoiceLayout({
 
 				<div className="flex gap-x-[8px]">
 					<Button
-						onClick={cancelHandler}
+						onClick={(e) => handleSubmit(e, false)}
 						createPage={true}
 						className={`px-[16px] ${
 							isLight
@@ -118,7 +222,7 @@ export default function InvoiceLayout({
 						Save as Draft
 					</Button>
 					<Button
-						onClick={markAsPaidHandler}
+						onClick={(e) => handleSubmit(e, true)}
 						createPage={true}
 						className="bg-[#7C5DFA] text-[#FFFFFF] px-[16px]"
 					>
@@ -132,7 +236,7 @@ export default function InvoiceLayout({
 	return (
 		<>
 			<Wrapper>
-				<div className="inline-flex items-center">
+				<div className="fixed inline-flex items-center">
 					<div
 						onClick={goBackHandler}
 						className="flex items-center cursor-pointer bounce-effect"

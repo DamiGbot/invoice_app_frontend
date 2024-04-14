@@ -1,19 +1,19 @@
-import { ComponentType, FC, useEffect } from "react";
+import { ComponentType, FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
 	isTokenValid,
 	isTokenExpired,
 	refreshAccessToken,
 } from "@/app/helpers/refreshToken";
-import { useSelector } from "react-redux";
 import { useDispatch } from "@/app/hooks/useDispatch";
-import { RootState } from "@/app/lib/store";
 import { initialCheck } from "@/app/lib/features/auth/authSlice";
+import LoadingComponent from "./UI/Loading";
 
 const withAuth = <P extends object>(Component: ComponentType<P>): FC<P> => {
 	// eslint-disable-next-line react/display-name
 	return (props: P) => {
 		const router = useRouter();
+		const [isLoading, setIsLoading] = useState(true);
 
 		const dispatch = useDispatch();
 
@@ -22,33 +22,52 @@ const withAuth = <P extends object>(Component: ComponentType<P>): FC<P> => {
 		}, [dispatch]);
 
 		useEffect(() => {
-			const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken") as string;
 
 			const verifyAndRefreshToken = async () => {
-				const token = localStorage.getItem("accessToken") as string;
-				const isValidIssuer = isTokenValid(token);
+				if (accessToken == null || accessToken.length < 1) {
+					return false;
+				}
+
+				const isValidIssuer = isTokenValid(accessToken);
 
 				if (!isValidIssuer) {
 					console.log("Invalid issuer. Please Login...");
 					return false;
 				}
 
-				if (isTokenExpired(token)) {
+				if (isTokenExpired(accessToken)) {
 					console.log("Token expired. Refreshing...");
-					await refreshAccessToken();
+					const result = await refreshAccessToken();
+
+					if (result.isSuccess === undefined) {
+						return false;
+					}
+
 					return true;
 				}
+
+				return true;
 			};
 
 			const checkAccess = async () => {
-				if (!accessToken && !(await verifyAndRefreshToken())) {
-					router.replace("/auth/Login");
+				if (!(await verifyAndRefreshToken())) {
+					localStorage.removeItem("accessToken");
+					localStorage.removeItem("refreshToken");
+
+					router.replace("/");
 				} else {
 				}
+
+				setIsLoading(false);
 			};
 
 			checkAccess();
 		}, [router]);
+
+		if (isLoading) {
+			return <LoadingComponent />;
+		}
 
 		return <Component {...props} />;
 	};

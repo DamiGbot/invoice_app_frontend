@@ -1,5 +1,6 @@
 // In your invoiceSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import apiInstance from "@/app/api/axios";
 import axios from "axios";
 import { Invoice, Item } from "@/app/types/Invoice";
 
@@ -7,6 +8,7 @@ interface InvoiceState {
 	currentInvoice: Invoice;
 	status: "idle" | "loading" | "failed";
 	error: string | undefined;
+	validationErrors: Record<string, string>;
 }
 
 const initialState: InvoiceState = {
@@ -24,9 +26,11 @@ const initialState: InvoiceState = {
 		clientAddress: { street: "", city: "", postCode: "", country: "" },
 		items: [],
 		total: 0,
+		isReady: false,
 	},
 	status: "idle",
 	error: undefined,
+	validationErrors: {},
 };
 
 // Simulated POST request for demonstration
@@ -34,12 +38,19 @@ export const submitInvoice = createAsyncThunk(
 	"invoice/submitInvoice",
 	async (invoiceData: Invoice, { rejectWithValue }) => {
 		try {
-			// Replace with your actual API call
-			const response = await axios.post("/api/invoices", invoiceData);
+			const accessToken = localStorage.getItem("accessToken");
+			const response = await apiInstance.post("/invoice/create", invoiceData, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+
+			console.log(response.data);
 			return response.data;
-		} catch (error) {
-			if (axios.isAxiosError(error)) {
-				return rejectWithValue(error.response?.data);
+		} catch (err) {
+			// Handle error more gracefully and return a custom error message or object
+			if (axios.isAxiosError(err) && err.response) {
+				return rejectWithValue(err.response.data);
 			}
 			return rejectWithValue("An unknown error occurred");
 		}
@@ -73,6 +84,12 @@ export const invoiceSlice = createSlice({
 		updateInvoice: (state, action: PayloadAction<Partial<Invoice>>) => {
 			state.currentInvoice = { ...state.currentInvoice, ...action.payload };
 		},
+		setValidationErrors(state, action: PayloadAction<Record<string, string>>) {
+			state.validationErrors = action.payload;
+		},
+		clearValidationErrors(state) {
+			state.validationErrors = {};
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -91,7 +108,14 @@ export const invoiceSlice = createSlice({
 	},
 });
 
-export const { addItem, deleteItem, updateItem, resetInvoice, updateInvoice } =
-	invoiceSlice.actions;
+export const {
+	addItem,
+	deleteItem,
+	updateItem,
+	resetInvoice,
+	updateInvoice,
+	setValidationErrors,
+	clearValidationErrors,
+} = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

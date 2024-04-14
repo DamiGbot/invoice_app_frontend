@@ -3,6 +3,7 @@
 
 import Wrapper from "@/app/components/Wrapper";
 import React, { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/app/context/themeContext";
@@ -32,6 +33,7 @@ const Registration: React.FC = () => {
 		router.push("/");
 	};
 
+	const fontColor = isLight ? "text-[#0C0E16] " : "text-[#fff]";
 	return (
 		<Wrapper>
 			<div className="inline-flex items-center">
@@ -53,13 +55,15 @@ const Registration: React.FC = () => {
 				</div>
 			</div>
 
-			<h1>Register</h1>
+			<h1 className={`text-4xl font-bold text-center mt-10 mb-4 ${fontColor}`}>
+				Register
+			</h1>
 
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<div>
 					<label
 						htmlFor="email"
-						className="block text-sm font-medium text-gray-700"
+						className={`block text-sm font-medium  ${fontColor}`}
 					>
 						Email
 					</label>
@@ -76,7 +80,7 @@ const Registration: React.FC = () => {
 				<div>
 					<label
 						htmlFor="username"
-						className="block text-sm font-medium text-gray-700"
+						className={`block text-sm font-medium  ${fontColor}`}
 					>
 						Username
 					</label>
@@ -93,7 +97,7 @@ const Registration: React.FC = () => {
 				<div>
 					<label
 						htmlFor="password"
-						className="block text-sm font-medium text-gray-700"
+						className={`block text-sm font-medium  ${fontColor}`}
 					>
 						Password
 					</label>
@@ -107,12 +111,23 @@ const Registration: React.FC = () => {
 						onChange={handleChange}
 					/>
 				</div>
-				<div>
+
+				<div className="flex justify-between items-center">
+					<Link
+						href="/auth/Login"
+						className={`underline ${
+							isLight ? "text-gray-300" : "text-gray-300"
+						} ${isLight ? "hover:text-black" : "hover:text-white"}`}
+					>
+						Already registered?
+					</Link>
+
 					<button
 						type="submit"
 						className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
 					>
 						Register
+						{/* {loading ? "Logging in..." : "Register"} */}
 					</button>
 				</div>
 			</form>

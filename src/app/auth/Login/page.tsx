@@ -26,6 +26,7 @@ import LoadingComponent from "@/app/components/UI/Loading";
 const Login: React.FC = () => {
 	const dispatch = useDispatch();
 	const { loading, error } = useSelector((state: RootState) => state.auth);
+	const [resultStatus, setresultStatus] = useState(false);
 	const [formData, setFormData] = useState<LoginData>({
 		email: "",
 		password: "",
@@ -35,23 +36,30 @@ const Login: React.FC = () => {
 	const { isLight } = useTheme();
 
 	useEffect(() => {
-		console.log("in the effect");
-		const accessToken = localStorage.getItem("accessToken");
+		const accessToken = localStorage.getItem("accessToken") as string;
 
 		// Optionally, add a function to verify the token's validity with your backend
 		const verifyAndRefreshToken = async () => {
-			const token = localStorage.getItem("accessToken") as string;
-			const isValidIssuer = isTokenValid(token);
+			if (accessToken == null || accessToken.length < 1) {
+				return false;
+			}
+
+			const isValidIssuer = isTokenValid(accessToken);
 
 			if (!isValidIssuer) {
 				console.log("Invalid issuer. Redirecting to login...");
 				return false;
 			}
 
-			const isExpired = isTokenExpired(token);
+			const isExpired = isTokenExpired(accessToken);
 			if (isExpired) {
 				console.log("Token expired. Refreshing...");
-				await refreshAccessToken();
+				const result = await refreshAccessToken();
+
+				if (result.isSuccess === undefined) {
+					return false;
+				}
+
 				return true;
 			}
 
@@ -59,7 +67,8 @@ const Login: React.FC = () => {
 		};
 
 		const checkAccess = async () => {
-			if (accessToken !== null && (await verifyAndRefreshToken())) {
+			if (await verifyAndRefreshToken()) {
+				setresultStatus(true);
 				router.replace("/invoices");
 			}
 		};
@@ -74,13 +83,12 @@ const Login: React.FC = () => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		// Handle the login logic here
-		console.log(process.env.NEXT_PUBLIC_API_BASE_URL_V1);
-		console.log(formData);
 		const resultAction = await dispatch(
 			login({ email: formData.email, password: formData.password })
 		);
 
 		const result = unwrapResult(resultAction);
+
 		if (result.isSuccess) {
 			router.replace("/invoices");
 		}
@@ -90,7 +98,9 @@ const Login: React.FC = () => {
 		router.push("/");
 	};
 
-	if (loading) return <LoadingComponent />;
+	const fontColor = isLight ? "text-[#0C0E16] " : "text-[#fff]";
+
+	if (loading || resultStatus) return <LoadingComponent />;
 
 	return (
 		<Wrapper>
@@ -113,13 +123,17 @@ const Login: React.FC = () => {
 				</div>
 			</div>
 
-			<h1>Login</h1>
+			<h1
+				className={`text-4xl font-bold text-center  dark:text-white mt-10 mb-4 ${fontColor}`}
+			>
+				Login
+			</h1>
 
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<div>
 					<label
 						htmlFor="email"
-						className="block text-sm font-medium text-gray-700"
+						className={`block text-sm font-medium ${fontColor}`}
 					>
 						Email
 					</label>
@@ -136,7 +150,7 @@ const Login: React.FC = () => {
 				<div>
 					<label
 						htmlFor="password"
-						className="block text-sm font-medium text-gray-700"
+						className={`block text-sm font-medium ${fontColor}`}
 					>
 						Password
 					</label>
@@ -152,15 +166,34 @@ const Login: React.FC = () => {
 				</div>
 
 				{error && <p className="text-red-500">{error}</p>}
-				<div>
-					<button
-						type="submit"
-						disabled={loading}
-						className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 mr-4"
+				<div className="flex justify-between items-center">
+					<Link
+						href="/auth/Register"
+						className={`underline ${
+							isLight ? "text-gray-300" : "text-gray-300"
+						} ${isLight ? "hover:text-black" : "hover:text-white"}`}
 					>
-						{loading ? "Logging in..." : "Login"}
-					</button>
-					<Link href="/auth/Register">Register</Link>
+						Register
+					</Link>
+
+					<div>
+						<Link
+							href="/auth/Register"
+							className={`underline ${
+								isLight ? "text-gray-300" : "text-gray-300"
+							} ${isLight ? "hover:text-black" : "hover:text-white"} mr-4`}
+						>
+							Forgot your password
+						</Link>
+
+						<button
+							type="submit"
+							disabled={loading}
+							className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 "
+						>
+							{loading ? "Logging in..." : "Login"}
+						</button>
+					</div>
 				</div>
 			</form>
 		</Wrapper>

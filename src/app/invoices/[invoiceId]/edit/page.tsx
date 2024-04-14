@@ -8,13 +8,17 @@ import { InvoiceParams } from "@/app/types/Params";
 
 import apiInstance from "../../../api/axios";
 import axios from "axios";
-import { Invoice } from "@/app/types/Invoice";
+
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/lib/store";
+import { updateInvoice } from "@/app/lib/features/invoices/invoiceSlice";
 
 import InvoiceForm from "@/app/components/InvoiceForm";
 import InvoiceActions from "@/app/components/InvoiceActions";
 import { useResponsive } from "@/app/context/ResponsiveContext";
 import ErrorModal from "@/app/components/UI/Error";
 import LoadingComponent from "@/app/components/UI/Loading";
+import { useDispatch } from "@/app/hooks/useDispatch";
 
 type EditInvoiceProps = {
 	params: InvoiceParams;
@@ -23,10 +27,13 @@ type EditInvoiceProps = {
 const EditInvoice = ({ params }: EditInvoiceProps) => {
 	const { isMobile } = useResponsive();
 	const { isLight } = useTheme();
-	const [invoiceData, setData] = useState<Invoice | null>(null);
+
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 	const currentId = params.invoiceId;
+
+	const dispatch = useDispatch();
+	const { currentInvoice } = useSelector((state: RootState) => state.invoice);
 
 	useEffect(() => {
 		const mainElement = document.querySelector("main");
@@ -50,9 +57,9 @@ const EditInvoice = ({ params }: EditInvoiceProps) => {
 						Authorization: `Bearer ${accessToken}`,
 					},
 				});
-				console.log(response.data);
+				console.log(response.data.result);
 
-				setData(response.data.result);
+				dispatch(updateInvoice(response.data.result));
 
 				setLoading(false);
 			} catch (err) {
@@ -70,12 +77,11 @@ const EditInvoice = ({ params }: EditInvoiceProps) => {
 
 		fetchInvoices();
 	}, [currentId]);
-
-	console.log(params);
+	console.log(currentInvoice);
 
 	if (loading) return <LoadingComponent />;
 
-	if (invoiceData === null) {
+	if (currentInvoice === null) {
 		return (
 			<div>
 				{error && <ErrorModal errorMessage={error} />}
@@ -92,16 +98,17 @@ const EditInvoice = ({ params }: EditInvoiceProps) => {
 				} leading-[32px]`}
 			>
 				Edit <span className="text-[#888EB0]">#</span>
-				{invoiceData.frontendId}
+				{currentInvoice.frontendId}
 			</p>
 
-			<InvoiceForm invoiceData={invoiceData} />
+			<InvoiceForm invoiceData={currentInvoice} />
+
 			{!isMobile && (
 				<InvoiceActions
 					params={params}
 					className="flex"
-					status={invoiceData.status}
-					frontendId={invoiceData.frontendId}
+					status={currentInvoice.status}
+					frontendId={currentInvoice.frontendId}
 				/>
 			)}
 		</section>

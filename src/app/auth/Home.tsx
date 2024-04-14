@@ -8,10 +8,12 @@ import {
 	refreshAccessToken,
 } from "../helpers/refreshToken";
 import { useRouter } from "next/navigation";
+import { useTheme } from "../context/themeContext";
 // import { Link } from "react-router-dom"; // Assuming you're using react-router for navigation
 
 const HomePage: React.FC = () => {
 	const router = useRouter();
+	const { isLight } = useTheme();
 
 	useEffect(() => {
 		const accessToken = localStorage.getItem("accessToken");
@@ -42,10 +44,18 @@ const HomePage: React.FC = () => {
 		checkAccess();
 	}, [router]);
 
+	const fontColor = isLight ? "text-[#0C0E16] " : "text-[#fff]";
+
 	return (
-		<div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-800">
-			<h1 className="text-4xl font-bold mb-4">Welcome to InvoiceApp</h1>
-			<p className="text-center mb-8 max-w-md">
+		<div
+			className={`flex flex-col items-center justify-center min-h-screen ${
+				isLight && "bg-gray-100"
+			} text-gray-800`}
+		>
+			<h1 className={`text-4xl font-bold mb-4 ${fontColor}`}>
+				Welcome to InvoiceApp
+			</h1>
+			<p className={`text-center mb-8 max-w-md ${fontColor}`}>
 				InvoiceApp is a comprehensive invoicing solution designed for
 				freelancers and small businesses. Manage your invoices, track payments,
 				and ensure your billing is seamless and efficient.

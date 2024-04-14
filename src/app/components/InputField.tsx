@@ -6,7 +6,8 @@ type InputFieldProps = {
 	name: string;
 	type: "text" | "number" | "email" | "date" | "dropdown";
 	value: string;
-	onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+	onChange: (value: string) => void;
+	error?: string;
 };
 
 const InputField = ({
@@ -15,8 +16,14 @@ const InputField = ({
 	type,
 	value,
 	onChange,
+	error,
 }: InputFieldProps) => {
 	const { isLight } = useTheme();
+
+	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const trimmedValue = e.target.value;
+		onChange(trimmedValue);
+	};
 
 	return (
 		<div className="w-full mb-[24px]">
@@ -38,8 +45,9 @@ const InputField = ({
 				name={name}
 				type={type}
 				value={value}
-				onChange={onChange}
+				onChange={handleInputChange}
 			/>
+			{error && <p style={{ color: "red" }}>{error}</p>}
 		</div>
 	);
 };

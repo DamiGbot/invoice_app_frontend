@@ -27,23 +27,24 @@ const ThemeContext = createContext<ThemeContextType>(defaultState);
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 	const [isLight, setIsLight] = useState<boolean>(true);
 
-	// useEffect(() => {
-	// 	const storedThemePreference = localStorage.getItem("isLightTheme");
-	// 	if (storedThemePreference) {
-	// 		setIsLight(storedThemePreference === "true");
-	// 	} else {
-	// 		const systemPreference = window.matchMedia(
-	// 			"(prefers-color-scheme: light)"
-	// 		).matches;
-	// 		setIsLight(systemPreference);
-	// 		localStorage.setItem("isLightTheme", String(systemPreference));
-	// 	}
-	// }, []);
+	useEffect(() => {
+		const storedThemePreference = localStorage.getItem("isLightTheme");
+
+		if (storedThemePreference) {
+			setIsLight(storedThemePreference === "true");
+		} else {
+			const systemPreference = window.matchMedia(
+				"(prefers-color-scheme: light)"
+			).matches;
+			setIsLight(systemPreference);
+			localStorage.setItem("isLightTheme", String(systemPreference));
+		}
+	}, []);
 
 	const toggleTheme = () => {
+		localStorage.setItem("isLightTheme", String(!isLight));
+
 		setIsLight(!isLight);
-		console.log(isLight);
-		// localStorage.setItem("isLightTheme", String(!isLight));
 	};
 
 	return (

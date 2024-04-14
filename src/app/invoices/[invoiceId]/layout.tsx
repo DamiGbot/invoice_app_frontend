@@ -10,6 +10,12 @@ import { InvoiceParams } from "@/app/types/Params";
 import InvoiceActions from "@/app/components/InvoiceActions";
 import { useResponsive } from "@/app/context/ResponsiveContext";
 
+import {
+	resetInvoice,
+	clearValidationErrors,
+} from "@/app/lib/features/invoices/invoiceSlice";
+import { useDispatch } from "@/app/hooks/useDispatch";
+
 type InvoiceLayoutProps = {
 	children: React.ReactNode;
 	params: InvoiceParams;
@@ -22,8 +28,11 @@ export default function InvoiceLayout({
 	const router = useRouter();
 	const { isLight } = useTheme();
 	const { isMobile } = useResponsive();
+	const dispatch = useDispatch();
 
 	const goBackHandler = () => {
+		dispatch(resetInvoice());
+		dispatch(clearValidationErrors());
 		router.back();
 	};
 

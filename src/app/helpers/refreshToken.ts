@@ -72,7 +72,7 @@ export const isTokenValid = (token: string) => {
 	if (!payload) return false;
 
 	const isIssuerMatch = payload.iss === expectedIssuer;
-	return isIssuerMatch && !isTokenExpired(token);
+	return isIssuerMatch;
 };
 
 export const isTokenExpired = (token: string) => {

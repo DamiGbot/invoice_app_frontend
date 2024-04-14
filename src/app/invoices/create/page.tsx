@@ -4,7 +4,6 @@ import { useEffect } from "react";
 
 import { useTheme } from "@/app/context/themeContext";
 import InvoiceForm from "@/app/components/InvoiceForm";
-import { Invoice } from "@/app/types/Invoice";
 import withAuth from "@/app/components/withAuth";
 
 import { useSelector } from "react-redux";
@@ -26,32 +25,6 @@ const CreateInvoice = () => {
 			}
 		};
 	}, [isLight]);
-
-	const emptyInvoice: Invoice = {
-		id: "",
-		createdAt: "",
-		frontendId: "",
-		paymentDue: "",
-		description: "",
-		paymentTerms: 0, // Assuming 0 is a sensible default for your application
-		clientName: "",
-		clientEmail: "",
-		status: "",
-		senderAddress: {
-			street: "",
-			city: "",
-			postCode: "",
-			country: "",
-		},
-		clientAddress: {
-			street: "",
-			city: "",
-			postCode: "",
-			country: "",
-		},
-		items: [], // Empty array, assuming no items initially
-		total: 0, // Assuming 0 total for an empty invoice
-	};
 
 	return (
 		<section className="mt-[24px]">

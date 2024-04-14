@@ -45,7 +45,6 @@ export default function InvoiceList() {
 						Authorization: `Bearer ${accessToken}`,
 					},
 				});
-				console.log(response.data);
 
 				if (response.data.result === null) {
 					setData([]);
@@ -72,8 +71,9 @@ export default function InvoiceList() {
 
 	const invoiceClickHanlder = (id: string) => {
 		console.log("working");
-
+		setLoading(true);
 		router.push(`/invoices/${id}`);
+		setLoading(false);
 	};
 
 	if (loading) return <LoadingComponent />;
