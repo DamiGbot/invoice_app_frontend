@@ -54,6 +54,7 @@ const InputField = ({
 				</label>
 				<div className="flex items-center w-full">
 					{type == "date" ? (
+						// @ts-ignore
 						<DatePicker
 							selected={value}
 							onChange={onChange}
