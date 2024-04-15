@@ -21,6 +21,7 @@ import {
 } from "@/app/lib/features/invoices/invoiceSlice";
 import LoadingComponent from "@/app/components/UI/Loading";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { validateEmail } from "@/app/helpers/formatDate";
 
 type InvoiceLayoutProps = {
 	children: React.ReactNode;
@@ -108,14 +109,15 @@ export default function InvoiceLayout({
 		if (!currentInvoice.clientName.trim()) {
 			newErrors.clientName = "Client's name is required.";
 		}
+
 		if (!currentInvoice.clientEmail.trim()) {
 			newErrors.clientEmail = "Client's email is required.";
+		} else {
+			if (!validateEmail(currentInvoice.clientEmail)) {
+				newErrors.clientEmail = "Please enter a valid email address.";
+			}
 		}
 
-		// Validating other invoice details
-		if (!currentInvoice.createdAt.trim()) {
-			newErrors.createdAt = "Invoice date is required.";
-		}
 		if (!currentInvoice.description.trim()) {
 			newErrors.description = "Project description is required.";
 		}

@@ -19,9 +19,11 @@ import { useDispatch } from "@/app/hooks/useDispatch";
 import { RootState } from "@/app/lib/store";
 import {
 	resetInvoice,
+	setValidationErrors,
 	clearValidationErrors,
 } from "@/app/lib/features/invoices/invoiceSlice";
 import ErrorModal from "./UI/Error";
+import { validateEmail } from "../helpers/formatDate";
 
 type InvoiceActionsProps = {
 	params: InvoiceParams;
@@ -71,7 +73,6 @@ export default function InvoiceActions({
 	const deleteAction = async () => {
 		setLoading(true);
 		try {
-			console.log(currentId);
 			const accessToken = localStorage.getItem("accessToken");
 			const response = await apiInstance.delete(`/invoice/${currentId}`, {
 				headers: {
@@ -107,8 +108,90 @@ export default function InvoiceActions({
 		router.push(`/invoices/${currentId}`);
 	};
 
+	const validateForm = () => {
+		let newErrors = {};
+
+		// Validating sender address fields
+		if (!currentInvoice.senderAddress.street.trim()) {
+			newErrors.senderAddressStreet = "Sender's street address is required.";
+		}
+		if (!currentInvoice.senderAddress.city.trim()) {
+			newErrors.senderAddressCity = "Sender's city is required.";
+		}
+		if (!currentInvoice.senderAddress.postCode.trim()) {
+			newErrors.senderAddressPostCode = "Sender's post code is required.";
+		}
+		if (!currentInvoice.senderAddress.country.trim()) {
+			newErrors.senderAddressCountry = "Sender's country is required.";
+		}
+
+		// Validating client address fields
+		if (!currentInvoice.clientAddress.street.trim()) {
+			newErrors.clientAddressStreet = "Client's street address is required.";
+		}
+		if (!currentInvoice.clientAddress.city.trim()) {
+			newErrors.clientAddressCity = "Client's city is required.";
+		}
+		if (!currentInvoice.clientAddress.postCode.trim()) {
+			newErrors.clientAddressPostCode = "Client's post code is required.";
+		}
+		if (!currentInvoice.clientAddress.country.trim()) {
+			newErrors.clientAddressCountry = "Client's country is required.";
+		}
+
+		// Validating client contact information
+		if (!currentInvoice.clientName.trim()) {
+			newErrors.clientName = "Client's name is required.";
+		}
+		if (!currentInvoice.clientEmail.trim()) {
+			newErrors.clientEmail = "Client's email is required.";
+		} else {
+			if (!validateEmail(currentInvoice.clientEmail)) {
+				newErrors.clientEmail = "Please enter a valid email address.";
+			}
+		}
+
+		if (!currentInvoice.description.trim()) {
+			newErrors.description = "Project description is required.";
+		}
+		if (
+			isNaN(currentInvoice.paymentTerms) ||
+			currentInvoice.paymentTerms <= 0
+		) {
+			newErrors.paymentTerms = "Valid payment terms are required.";
+		}
+
+		// Check if there are any items added
+		if (currentInvoice.items.length === 0) {
+			newErrors.items = "At least one item must be added to the invoice.";
+		} else {
+			// Validate each item
+			currentInvoice.items.forEach((item, index) => {
+				const baseKey = `item${index}`;
+
+				if (!item.name.trim()) {
+					newErrors[`${baseKey}Name`] = `Name is required.`;
+				}
+				if (!item.quantity || item.quantity <= 0) {
+					newErrors[`${baseKey}Quantity`] = `Quantity must be greater than 0.`;
+				}
+				if (!item.price || item.price <= 0) {
+					newErrors[`${baseKey}Price`] = `Price must be greater than 0.`;
+				}
+			});
+		}
+
+		dispatch(setValidationErrors(newErrors));
+		return Object.keys(newErrors).length === 0;
+	};
+
 	const saveChangesHandler = async () => {
+		if (!validateForm()) {
+			return;
+		}
 		setLoading(true);
+		console.log(currentInvoice);
+
 		try {
 			console.log(currentId);
 			const accessToken = localStorage.getItem("accessToken");

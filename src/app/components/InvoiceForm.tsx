@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import Image from "next/image";
 
@@ -7,6 +7,7 @@ import InputField from "./InputField";
 import Button from "./UI/Button";
 import iconDelete from "../../../public/assets/icon-delete.svg";
 import { Invoice, Item } from "../types/Invoice";
+import { useRouter, usePathname } from "next/navigation";
 
 import { useDispatch } from "@/app/hooks/useDispatch";
 import { useSelector } from "react-redux";
@@ -16,15 +17,17 @@ import {
 	deleteItem,
 	updateInvoice,
 	updateItem,
+	resetInvoice,
 	clearValidationErrors,
 } from "@/app/lib/features/invoices/invoiceSlice";
+import { formatDateFromArray, validateEmail } from "../helpers/formatDate";
 
 type InvoiceFormProps = {
 	invoiceData: Invoice;
 };
 
 const formatDate = (dateString) => {
-	const date = new Date(dateString);
+	const date = dateString.length < 1 ? new Date() : new Date(dateString);
 	return new Intl.DateTimeFormat("en-CA", {
 		// 'en-CA' uses the YYYY-MM-DD format
 		year: "numeric",
@@ -40,9 +43,11 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 	const { items } = useSelector(
 		(state: RootState) => state.invoice.currentInvoice
 	);
+	const pathString = usePathname();
 
 	useEffect(() => {
 		return () => {
+			dispatch(resetInvoice());
 			dispatch(clearValidationErrors());
 		};
 	}, [dispatch]);
@@ -50,6 +55,7 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 	const handleAddItem = () => {
 		dispatch(addItem());
 	};
+	const isEdit = pathString.split("/")[3] === "edit";
 
 	const handleItemChange = (
 		index: number,
@@ -77,9 +83,15 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 		dispatch(updateItem({ index, item: updatedItem }));
 	};
 
+	if (invoiceData.createdAt.length < 1) {
+		updateInvoice({
+			createdAt: new Date().toISOString().split("T")[0],
+		});
+	}
+
 	const formattedDate = invoiceData.createdAt
 		? formatDate(invoiceData.createdAt)
-		: "";
+		: new Date().toISOString().split("T")[0];
 
 	return (
 		<>
@@ -274,18 +286,21 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 					/>
 
 					<InputField
-						label="Invoice Date"
+						label="Invoice Start Date"
 						name="Invoice Date"
 						type="date"
 						value={formattedDate}
 						onChange={(newValue) =>
 							dispatch(
 								updateInvoice({
-									createdAt: newValue,
+									createdAt: formatDateFromArray(
+										new String(newValue).split(" ")
+									),
 								})
 							)
 						}
 						error={validationErrors.createdAt}
+						isEdit={isEdit}
 					/>
 
 					<InputField

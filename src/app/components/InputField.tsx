@@ -1,7 +1,10 @@
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useState } from "react";
 import { useTheme } from "../context/themeContext";
-import { FaCalendarAlt } from "react-icons/fa";
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { formatDate } from "../helpers/formatDate";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/lib/store";
 
 type InputFieldProps = {
 	label: string;
@@ -10,6 +13,7 @@ type InputFieldProps = {
 	value: string;
 	onChange: (value: string) => void;
 	error?: string;
+	isEdit?: boolean;
 };
 
 const InputField = ({
@@ -19,19 +23,22 @@ const InputField = ({
 	value,
 	onChange,
 	error,
+	isEdit,
 }: InputFieldProps) => {
 	const { isLight } = useTheme();
-	const ref = useRef<HTMLInputElement>(null);
+	const today = new Date();
 
-	if (type === "date") {
-		console.log(ref);
-		console.log(ref.current);
-		console.log(ref.current?.click);
-	}
+	// if (type === "date") {
+	// 	if (value === null || value.length < 1 || value === undefined) {
+	// 		value = formatDate(new Date());
+	// 	}
+	// 	console.log(value);
+	// 	console.log(isEdit);
+	// }
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const trimmedValue = e.target.value;
-		onChange(trimmedValue);
+		const { value } = e.target;
+		onChange(value);
 	};
 
 	return (
@@ -45,17 +52,30 @@ const InputField = ({
 				>
 					{label}
 				</label>
-				<div className="flex items-center">
+				<div className="flex items-center w-full">
 					{type == "date" ? (
 						<DatePicker
 							selected={value}
 							onChange={onChange}
-							customInput={<input className="form-control" />}
+							// className="w-full"
+							minDate={today}
+							customInput={
+								<input
+									className={`rounded-[4px]  border pl-[19px] py-[16px] font-bold text-[12px] tracking-[-0.25px] leading-[15px] ${
+										isLight
+											? "text-[#0C0E16] border-[#DFE3FA]"
+											: "bg-[#1E2139] border-[#252945] text-[#fff]"
+									}`}
+									value={value}
+									disabled={isEdit}
+								/>
+							}
 							dateFormat="yyyy-MM-dd"
+							// calendarContainer={MyContainer}
+							disabled={isEdit}
 						/>
 					) : (
 						<input
-							ref={ref}
 							className={`w-full rounded-[4px]  border pl-[19px] py-[16px] font-bold text-[12px] tracking-[-0.25px] leading-[15px] ${
 								isLight
 									? "text-[#0C0E16] border-[#DFE3FA]"
@@ -68,12 +88,9 @@ const InputField = ({
 							onChange={handleInputChange}
 						/>
 					)}
-					{type === "date" && (
-						<FaCalendarAlt
-							size={24}
-							className="absolute right-3 text-lg cursor-pointer"
-						/>
-					)}
+					{/* {type === "date" && (
+						<FaCalendarAlt size={24} className="text-lg cursor-pointer" />
+					)} */}
 				</div>
 
 				{error && <p style={{ color: "red" }}>{error}</p>}
@@ -81,5 +98,16 @@ const InputField = ({
 		</>
 	);
 };
+
+// const MyContainer = ({ className, children }) => {
+// 	return (
+// 		<div>
+// 			<CalendarContainer className={className}>
+// 				{/* <div style={{ background: "#f0f0f0" }}>Pick a start date?</div> */}
+// 				<div style={{ position: "relative" }}>{children}</div>
+// 			</CalendarContainer>
+// 		</div>
+// 	);
+// };
 
 export default InputField;

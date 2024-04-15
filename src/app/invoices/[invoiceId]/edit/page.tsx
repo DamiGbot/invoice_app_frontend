@@ -77,7 +77,6 @@ const EditInvoice = ({ params }: EditInvoiceProps) => {
 
 		fetchInvoices();
 	}, [currentId]);
-	console.log(currentInvoice);
 
 	if (loading) return <LoadingComponent />;
 
