@@ -58,6 +58,8 @@ export const login = createAsyncThunk(
 	"auth/login",
 	async ({ email, password }: LoginData, { rejectWithValue }) => {
 		try {
+			console.log("API Base URL:", process.env.NEXT_PUBLIC_API_BASE_URL_V1);
+
 			const response = await apiInstance.post("/auth/login", {
 				email,
 				password,
