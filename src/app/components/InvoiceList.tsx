@@ -6,7 +6,7 @@ import Image from "next/image";
 import arrowDown from "../../../public/assets/icon-arrow-down.svg";
 import arrowRight from "../../../public/assets/icon-arrow-right.svg";
 import plus from "../../../public/assets/icon-plus.svg";
-// import data from "../helpers/data.json";
+
 import illustrationEmpty from "../../../public/assets/illustration-empty.svg";
 
 import Card from "./Card";
@@ -25,9 +25,6 @@ import axios from "axios";
 import LoadingComponent from "./UI/Loading";
 
 export default function InvoiceList() {
-	// using this to test the no invoice state, remember to delete this
-	// data.length = 0;
-
 	const router = useRouter();
 	const { isMobile, isTablet, isDesktop } = useResponsive();
 	const { isLight } = useTheme();
