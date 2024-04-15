@@ -190,7 +190,6 @@ export default function InvoiceActions({
 			return;
 		}
 		setLoading(true);
-		console.log(currentInvoice);
 
 		try {
 			console.log(currentId);
@@ -239,6 +238,8 @@ export default function InvoiceActions({
 			</div>
 		);
 	}
+
+	console.log(status);
 
 	return (
 		<>

@@ -31,10 +31,13 @@ export default function InvoiceList() {
 	const router = useRouter();
 	const { isMobile, isTablet, isDesktop } = useResponsive();
 	const { isLight } = useTheme();
+	const [staticData, setStaticData] = useState<Invoice[]>([]);
 	const [data, setData] = useState<Invoice[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 	const { userId } = useSelector((state: RootState) => state.auth);
+	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const [selectedStatus, setSelectedStatus] = useState("");
 
 	useEffect(() => {
 		const fetchInvoices = async () => {
@@ -48,8 +51,10 @@ export default function InvoiceList() {
 
 				if (response.data.result === null) {
 					setData([]);
+					setStaticData([]);
 				} else {
 					setData(response.data.result);
+					setStaticData(response.data.result);
 				}
 
 				setLoading(false);
@@ -70,10 +75,24 @@ export default function InvoiceList() {
 	}, [userId]);
 
 	const invoiceClickHanlder = (id: string) => {
-		console.log("working");
 		setLoading(true);
 		router.push(`/invoices/${id}`);
 		setLoading(false);
+	};
+
+	const handleFilterSelect = (status) => {
+		setSelectedStatus(status); // Update the selected status
+		setDropdownOpen(false); // Close the dropdown
+		const filteredData = staticData.filter(
+			(invoice) => invoice.status.toLowerCase() === status
+		); // Trigger filtering in the parent component
+		setData(filteredData);
+	};
+
+	const clearFilterHanlder = () => {
+		setDropdownOpen(false);
+		setData(staticData);
+		setSelectedStatus("");
 	};
 
 	if (loading) return <LoadingComponent />;
@@ -114,18 +133,60 @@ export default function InvoiceList() {
 					</div>
 
 					<div className="flex flex-row">
-						<div className="flex items-center">
-							<p
-								className={`font-bold text-[12px] tracking-[-0.25px] ${
-									isLight ? "text-[#0C0E16]" : "text-[#fff]"
-								} leading-[15px]`}
-							>
-								Filter {!isMobile && "by status "}{" "}
-							</p>
-							<span className={`ml-[12px]`}>
-								<Image src={arrowDown} alt="arrow Down" />
-							</span>
-						</div>
+						{(data.length !== 0 || selectedStatus !== "") && (
+							<div className="relative flex items-center gap-4 ">
+								<div
+									className=" flex items-center cursor-pointer bounce-effect"
+									onClick={() => setDropdownOpen(!dropdownOpen)}
+								>
+									<p
+										className={`font-bold text-[12px] tracking-[-0.25px] ${
+											isLight ? "text-[#0C0E16]" : "text-[#fff]"
+										} leading-[15px]`}
+									>
+										Filter {!isMobile && "by status "}{" "}
+									</p>
+									<span className={`ml-[12px]`}>
+										<Image src={arrowDown} alt="arrow Down" />
+									</span>
+								</div>
+
+								{dropdownOpen && (
+									<div
+										className={`absolute mt-6 w-full rounded-md shadow-lg  bg-white z-50 `}
+									>
+										<ul>
+											{["draft", "pending", "paid"].map((status) => (
+												<li
+													key={status}
+													className={`px-4 py-2 hover:bg-gray-100 text-gray-900 cursor-pointer ${
+														selectedStatus === status ? "bg-gray-100 " : ""
+													}`}
+													onClick={() => handleFilterSelect(status)}
+												>
+													{status.charAt(0).toUpperCase() + status.slice(1)}
+												</li>
+											))}
+										</ul>
+									</div>
+								)}
+
+								{selectedStatus !== "" && (
+									<div
+										className=" flex items-center cursor-pointer bounce-effect"
+										onClick={clearFilterHanlder}
+									>
+										<p
+											className={`font-bold text-[12px] tracking-[-0.25px] ${
+												isLight ? "text-[#0C0E16]" : "text-[#fff]"
+											} leading-[15px]`}
+										>
+											clear filter
+										</p>
+									</div>
+								)}
+							</div>
+						)}
 
 						<Link
 							href="/invoices/create"

@@ -45,7 +45,6 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 						Authorization: `Bearer ${accessToken}`,
 					},
 				});
-				console.log(response.data);
 
 				setData(response.data.result);
 
@@ -67,7 +66,6 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 	}, [currentId]);
 
 	const markAsPaidRequest = async () => {
-		console.log(loading);
 		setLoading(true);
 		try {
 			console.log(currentId);
@@ -102,10 +100,8 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 	};
 
 	const markAsPendingRequest = async () => {
-		console.log(loading);
 		setLoading(true);
 		try {
-			console.log(currentId);
 			const accessToken = localStorage.getItem("accessToken");
 			const response = await apiInstance.post(
 				`/invoice/${currentId}/mark-as-pending`,
@@ -116,7 +112,6 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 					},
 				}
 			);
-			console.log(response.data);
 
 			if (invoiceData) {
 				setData({ ...invoiceData, status: "pending" });

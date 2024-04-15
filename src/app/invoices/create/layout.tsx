@@ -238,7 +238,7 @@ export default function InvoiceLayout({
 	return (
 		<>
 			<Wrapper>
-				<div className="fixed inline-flex items-center">
+				<div className="inline-flex items-center">
 					<div
 						onClick={goBackHandler}
 						className="flex items-center cursor-pointer bounce-effect"

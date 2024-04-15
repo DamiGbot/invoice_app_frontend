@@ -82,6 +82,34 @@ export const login = createAsyncThunk(
 	}
 );
 
+export const register = createAsyncThunk(
+	"auth/register",
+	async (
+		userData: {
+			firstName: string;
+			lastName: string;
+			email: string;
+			username: string;
+			password: string;
+		},
+		{ rejectWithValue }
+	) => {
+		try {
+			const response = await apiInstance.post("/auth/register", userData);
+			// Assuming the response will have tokens if needed
+
+			return response.data;
+		} catch (err) {
+			if (axios.isAxiosError(err) && err.response) {
+				return rejectWithValue(
+					err.response.data.message || "Failed to register."
+				);
+			}
+			return rejectWithValue("An unknown error occurred");
+		}
+	}
+);
+
 // Slice definition
 const authSlice = createSlice({
 	name: "auth",

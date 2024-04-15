@@ -8,15 +8,28 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/app/context/themeContext";
 import arrowLeft from "../../../../public/assets/icon-arrow-left.svg";
+import { unwrapResult } from "@reduxjs/toolkit";
+
+import { login, register } from "@/app/lib/features/auth/authSlice";
+import { RegisterData } from "@/app/types/Auth";
+import { useSelector } from "react-redux";
+import { useDispatch } from "@/app/hooks/useDispatch";
+import { RootState } from "@/app/lib/store";
+
+import LoadingComponent from "@/app/components/UI/Loading";
 
 const Registration: React.FC = () => {
-	const [formData, setFormData] = useState({
+	const [formData, setFormData] = useState<RegisterData>({
+		firstName: "",
+		lastName: "",
 		email: "",
 		username: "",
 		password: "",
 	});
 	const router = useRouter();
 	const { isLight } = useTheme();
+	const dispatch = useDispatch();
+	const { loading, error } = useSelector((state: RootState) => state.auth);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,7 +39,20 @@ const Registration: React.FC = () => {
 		e.preventDefault();
 		// Handle the registration logic here
 		console.log(formData);
-		// You might want to send formData to your backend API
+
+		const actionResult = await dispatch(register(formData));
+		const result = unwrapResult(actionResult);
+		if (result.isSuccess) {
+			const resultAction = await dispatch(
+				login({ email: formData.email, password: formData.password })
+			);
+
+			const loginResult = unwrapResult(resultAction);
+
+			if (loginResult.isSuccess) {
+				router.replace("/invoices");
+			}
+		}
 	};
 
 	const goBackHandler = () => {
@@ -34,6 +60,9 @@ const Registration: React.FC = () => {
 	};
 
 	const fontColor = isLight ? "text-[#0C0E16] " : "text-[#fff]";
+
+	if (loading) return <LoadingComponent />;
+
 	return (
 		<Wrapper>
 			<div className="inline-flex items-center">
@@ -60,6 +89,42 @@ const Registration: React.FC = () => {
 			</h1>
 
 			<form onSubmit={handleSubmit} className="space-y-4">
+				<div>
+					<label
+						htmlFor="firstName"
+						className={`block text-sm font-medium  ${fontColor}`}
+					>
+						First Name
+					</label>
+					<input
+						type="firstName"
+						name="firstName"
+						id="firstName"
+						required
+						className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+						value={formData.firstName}
+						onChange={handleChange}
+					/>
+				</div>
+
+				<div>
+					<label
+						htmlFor="lastName"
+						className={`block text-sm font-medium  ${fontColor}`}
+					>
+						Last Name
+					</label>
+					<input
+						type="lastName"
+						name="lastName"
+						id="lastName"
+						required
+						className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+						value={formData.lastName}
+						onChange={handleChange}
+					/>
+				</div>
+
 				<div>
 					<label
 						htmlFor="email"
@@ -112,6 +177,7 @@ const Registration: React.FC = () => {
 					/>
 				</div>
 
+				{error && <p className="text-red-500">{error}</p>}
 				<div className="flex justify-between items-center">
 					<Link
 						href="/auth/Login"
@@ -124,10 +190,11 @@ const Registration: React.FC = () => {
 
 					<button
 						type="submit"
+						disabled={loading}
 						className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
 					>
-						Register
-						{/* {loading ? "Logging in..." : "Register"} */}
+						{/* Register */}
+						{loading ? "In process... in..." : "Register"}
 					</button>
 				</div>
 			</form>
