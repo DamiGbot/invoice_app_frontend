@@ -57,7 +57,6 @@ const EditInvoice = ({ params }: EditInvoiceProps) => {
 						Authorization: `Bearer ${accessToken}`,
 					},
 				});
-				console.log(response.data.result);
 
 				dispatch(updateInvoice(response.data.result));
 

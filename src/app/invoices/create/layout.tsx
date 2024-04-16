@@ -60,10 +60,8 @@ export default function InvoiceLayout({
 			const result = unwrapResult(resultAction);
 
 			if (result.isSuccess) {
-				if (Object.keys(validationErrors).length === 0) {
-					dispatch(clearValidationErrors());
-					router.push("/invoices");
-				}
+				dispatch(clearValidationErrors());
+				router.push("/invoices");
 			}
 		}
 	};

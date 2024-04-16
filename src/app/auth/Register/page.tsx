@@ -37,8 +37,6 @@ const Registration: React.FC = () => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		// Handle the registration logic here
-		console.log(formData);
 
 		const actionResult = await dispatch(register(formData));
 		const result = unwrapResult(actionResult);

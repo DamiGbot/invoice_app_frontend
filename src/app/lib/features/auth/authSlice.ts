@@ -55,8 +55,6 @@ export const login = createAsyncThunk(
 	"auth/login",
 	async ({ email, password }: LoginData, { rejectWithValue }) => {
 		try {
-			console.log("API Base URL:", process.env.NEXT_PUBLIC_API_BASE_URL_V1);
-
 			const response = await apiInstance.post("/auth/login", {
 				email,
 				password,
@@ -69,7 +67,7 @@ export const login = createAsyncThunk(
 			// Consider the security implications of where to store these.
 			localStorage.setItem("accessToken", accessToken);
 			localStorage.setItem("refreshToken", refreshToken);
-			console.log(response.data);
+
 			return response.data;
 		} catch (err) {
 			// Handle error more gracefully and return a custom error message or object
@@ -134,7 +132,6 @@ const authSlice = createSlice({
 				state.loading = true;
 			})
 			.addCase(login.fulfilled, (state, action) => {
-				console.log(action);
 				state.loading = false;
 				state.isLoggedIn = true;
 				state.userId = action.payload.userId;

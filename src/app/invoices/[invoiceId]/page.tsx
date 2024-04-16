@@ -68,7 +68,6 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 	const markAsPaidRequest = async () => {
 		setLoading(true);
 		try {
-			console.log(currentId);
 			const accessToken = localStorage.getItem("accessToken");
 			const response = await apiInstance.post(
 				`/invoice/${currentId}/mark-as-paid`,
@@ -79,7 +78,6 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 					},
 				}
 			);
-			console.log(response.data);
 
 			if (invoiceData) {
 				setData({ ...invoiceData, status: "paid" });

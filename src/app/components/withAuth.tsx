@@ -32,12 +32,10 @@ const withAuth = <P extends object>(Component: ComponentType<P>): FC<P> => {
 				const isValidIssuer = isTokenValid(accessToken);
 
 				if (!isValidIssuer) {
-					console.log("Invalid issuer. Please Login...");
 					return false;
 				}
 
 				if (isTokenExpired(accessToken)) {
-					console.log("Token expired. Refreshing...");
 					const result = await refreshAccessToken();
 
 					if (result.isSuccess === undefined) {

@@ -24,12 +24,10 @@ const HomePage: React.FC = () => {
 			const isValidIssuer = isTokenValid(token);
 
 			if (!isValidIssuer) {
-				console.log("Invalid issuer. Please Login...");
 				return false;
 			}
 
 			if (isTokenExpired(token)) {
-				console.log("Token expired. Refreshing...");
 				await refreshAccessToken();
 				return true;
 			}

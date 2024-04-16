@@ -46,13 +46,11 @@ const Login: React.FC = () => {
 			const isValidIssuer = isTokenValid(accessToken);
 
 			if (!isValidIssuer) {
-				console.log("Invalid issuer. Redirecting to login...");
 				return false;
 			}
 
 			const isExpired = isTokenExpired(accessToken);
 			if (isExpired) {
-				console.log("Token expired. Refreshing...");
 				const result = await refreshAccessToken();
 
 				if (result.isSuccess === undefined) {

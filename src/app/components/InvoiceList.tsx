@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 import apiInstance from "../api/axios";
 import axios from "axios";
 import LoadingComponent from "./UI/Loading";
+import { truncateString } from "../helpers/utility";
 
 export default function InvoiceList() {
 	const router = useRouter();
@@ -265,7 +266,7 @@ export default function InvoiceList() {
 													isLight ? "text-[#858BB2]" : "text-[#fff]"
 												} leading-[15px]`}
 											>
-												{item.clientName}
+												{truncateString(item.clientName, 10)}
 											</p>
 										</div>
 
@@ -337,7 +338,7 @@ export default function InvoiceList() {
 											isLight ? "text-[#858BB2]" : "text-[#fff]"
 										} leading-[15px]`}
 									>
-										{item.clientName}
+										{truncateString(item.clientName, 13)}
 									</p>{" "}
 									<p
 										className={`font-bold text-[16px] tracking-[-0.8px] ${

@@ -18,7 +18,7 @@ type ThemeContextType = {
 };
 
 const defaultState = {
-	isLight: true,
+	isLight: false,
 	toggleTheme: () => {},
 };
 

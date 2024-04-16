@@ -79,7 +79,6 @@ export default function InvoiceActions({
 					Authorization: `Bearer ${accessToken}`,
 				},
 			});
-			console.log(response.data);
 
 			setLoading(false);
 			router.replace("/invoices");
@@ -192,7 +191,6 @@ export default function InvoiceActions({
 		setLoading(true);
 
 		try {
-			console.log(currentId);
 			const accessToken = localStorage.getItem("accessToken");
 			const response = await apiInstance.put(
 				`/invoice/edit/${currentId}`,
@@ -203,7 +201,6 @@ export default function InvoiceActions({
 					},
 				}
 			);
-			console.log(response.data);
 
 			setLoading(false);
 			router.replace(`/invoices/${currentId}`);
@@ -238,8 +235,6 @@ export default function InvoiceActions({
 			</div>
 		);
 	}
-
-	console.log(status);
 
 	return (
 		<>

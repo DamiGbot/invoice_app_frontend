@@ -5,6 +5,7 @@ import Nav from "../components/Nav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/lib/store";
 import withAuth from "../components/withAuth";
+import LoadingComponent from "../components/UI/Loading";
 
 const Layout = ({
 	children,
@@ -14,7 +15,7 @@ const Layout = ({
 	const { isLoggedIn, loading } = useSelector((state: RootState) => state.auth);
 
 	if (loading) {
-		return <h1>Loading.....</h1>;
+		return <LoadingComponent />;
 	}
 
 	if (isLoggedIn) {

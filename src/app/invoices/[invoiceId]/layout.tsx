@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useTheme } from "@/app/context/themeContext";
@@ -39,12 +39,15 @@ export default function InvoiceLayout({
 	const router = useRouter();
 	const { isLight } = useTheme();
 	const { isMobile } = useResponsive();
+	const pathString = usePathname();
 	const dispatch = useDispatch();
 	const { currentInvoice } = useSelector((state: RootState) => state.invoice);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
 	const currentId = params.invoiceId;
+	const isEdit = pathString.split("/")[3] === "edit";
+	console.log(isEdit);
 
 	useEffect(() => {
 		const fetchInvoices = async () => {
@@ -55,7 +58,6 @@ export default function InvoiceLayout({
 						Authorization: `Bearer ${accessToken}`,
 					},
 				});
-				console.log(response.data.result);
 
 				dispatch(updateInvoice(response.data.result));
 
@@ -79,7 +81,12 @@ export default function InvoiceLayout({
 	const goBackHandler = () => {
 		dispatch(resetInvoice());
 		dispatch(clearValidationErrors());
-		router.back();
+
+		if (isEdit) {
+			router.push(`/invoices/${currentId}`);
+		} else {
+			router.push(`/invoices`);
+		}
 	};
 
 	if (loading) return <LoadingComponent />;

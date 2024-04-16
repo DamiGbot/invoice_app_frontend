@@ -45,7 +45,6 @@ export const submitInvoice = createAsyncThunk(
 				},
 			});
 
-			console.log(response.data);
 			return response.data;
 		} catch (err) {
 			// Handle error more gracefully and return a custom error message or object
