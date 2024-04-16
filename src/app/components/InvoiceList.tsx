@@ -151,13 +151,13 @@ export default function InvoiceList() {
 
 								{dropdownOpen && (
 									<div
-										className={`absolute mt-6 w-full rounded-md shadow-lg  bg-white z-50 `}
+										className={`absolute mt-6 w-[8rem] rounded-md shadow-lg  bg-white z-50 `}
 									>
 										<ul>
 											{["draft", "pending", "paid"].map((status) => (
 												<li
 													key={status}
-													className={`px-4 py-2 hover:bg-gray-100 text-gray-900 cursor-pointer ${
+													className={`px-4 py-2 rounded-md hover:bg-gray-100 text-gray-900 cursor-pointer ${
 														selectedStatus === status ? "bg-gray-100 " : ""
 													}`}
 													onClick={() => handleFilterSelect(status)}
