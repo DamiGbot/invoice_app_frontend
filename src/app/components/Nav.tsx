@@ -92,7 +92,10 @@ export default function Nav() {
 						)}
 					</div>
 					<div className="border-t-2 pt-6 w-full border-[#494E6E] flex justify-center items-center mb-6">
-						<div onClick={toggleDropdown} className="cursor-pointer h-[32px]">
+						<div
+							onClick={toggleDropdown}
+							className="cursor-pointer h-[32px] flex items-center"
+						>
 							{firstLetter ? (
 								<Avatar
 									style={{ backgroundColor: "#0b51c1" }}
@@ -120,12 +123,12 @@ export default function Nav() {
 							onClick={handleCloseDropdown}
 						></div>
 						<div className="z-10 absolute bottom-10 left-[4rem] bg-white rounded-lg shadow-lg mt-2 py-2 w-48">
-							<Link
+							{/* <Link
 								href="/profile"
 								className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
 							>
 								Profile
-							</Link>
+							</Link> */}
 							<div className="border-t border-gray-100"></div>
 							<button
 								onClick={handleLogout}
@@ -187,12 +190,12 @@ export default function Nav() {
 						ref={dropdownRef}
 						className="z-10 absolute top-[4rem] right-[1rem] bg-white rounded-lg shadow-lg mt-2 py-2 w-48 transform transition duration-300 ease-out ${isOpen ? 'translate-y-0' : '-translate-y-full opacity-0'}"
 					>
-						<Link
+						{/* <Link
 							href="/profile"
 							className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
 						>
 							Profile
-						</Link>
+						</Link> */}
 						<div className="border-t border-gray-100"></div>
 						<button
 							onClick={handleLogout}
