@@ -2,14 +2,19 @@
 
 import { useResponsive } from "../context/ResponsiveContext";
 import { useTheme } from "../context/themeContext";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/lib/store";
 
 type WrapperProps = {
 	children: React.ReactNode;
 };
 
 export default function Wrapper({ children }: WrapperProps) {
-	const { isMobile, isTablet, isDesktop } = useResponsive();
+	const { isMobile, isTablet } = useResponsive();
+	const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 	const { isLight } = useTheme();
+
+	console.log(isLoggedIn);
 
 	let style = "my-20 w-3/5";
 	if (isMobile) {
@@ -20,9 +25,9 @@ export default function Wrapper({ children }: WrapperProps) {
 
 	let top = "flex items-center justify-center w-full";
 	if (isMobile) {
-		top = "mt-12 pb-6";
+		top = `${isLoggedIn ? "mt-12" : ""} pb-6`;
 	} else if (isTablet) {
-		top = "mt-14 pb-6";
+		top = `${isLoggedIn ? "mt-14" : ""} pb-6`;
 	}
 
 	return (
