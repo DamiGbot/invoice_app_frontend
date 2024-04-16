@@ -16,7 +16,8 @@ const HomePage: React.FC = () => {
 	const router = useRouter();
 	const { isLight } = useTheme();
 	const [showModal, setShowModal] = useState(false);
-	const warning = localStorage.getItem("warning");
+	const warning =
+		typeof window !== "undefined" ? localStorage.getItem("warning") : "";
 
 	useEffect(() => {
 		setShowModal(true);
@@ -28,7 +29,8 @@ const HomePage: React.FC = () => {
 	};
 
 	useEffect(() => {
-		const accessToken = localStorage.getItem("accessToken");
+		const accessToken =
+			typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
 
 		// Optionally, add a function to verify the token's validity with your backend
 		const verifyAndRefreshToken = async () => {
