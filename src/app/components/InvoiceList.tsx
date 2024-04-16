@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 
 import arrowDown from "../../../public/assets/icon-arrow-down.svg";
@@ -19,7 +19,7 @@ import { useResponsive } from "../context/ResponsiveContext";
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/lib/store";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import apiInstance from "../api/axios";
 import axios from "axios";
 import LoadingComponent from "./UI/Loading";
@@ -29,6 +29,7 @@ export default function InvoiceList() {
 	const router = useRouter();
 	const { isMobile, isTablet, isDesktop } = useResponsive();
 	const { isLight } = useTheme();
+	const pathString = usePathname();
 	const [staticData, setStaticData] = useState<Invoice[]>([]);
 	const [data, setData] = useState<Invoice[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -36,6 +37,18 @@ export default function InvoiceList() {
 	const { userId } = useSelector((state: RootState) => state.auth);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState("");
+	const dropdownRef = useRef(null);
+
+	useEffect(() => {
+		setDropdownOpen(false);
+	}, [pathString]);
+
+	useEffect(() => {
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
 
 	useEffect(() => {
 		const fetchInvoices = async () => {
@@ -72,6 +85,15 @@ export default function InvoiceList() {
 		fetchInvoices();
 	}, [userId]);
 
+	const handleCloseDropdown = () => {
+		setDropdownOpen(false);
+	};
+
+	const handleClickOutside = (event) => {
+		if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+			setDropdownOpen(false);
+		}
+	};
 	const invoiceClickHanlder = (id: string) => {
 		setLoading(true);
 		router.push(`/invoices/${id}`);
@@ -150,23 +172,30 @@ export default function InvoiceList() {
 								</div>
 
 								{dropdownOpen && (
-									<div
-										className={`absolute mt-6 w-[8rem] rounded-md shadow-lg  bg-white z-50 `}
-									>
-										<ul>
-											{["draft", "pending", "paid"].map((status) => (
-												<li
-													key={status}
-													className={`px-4 py-2 rounded-md hover:bg-gray-100 text-gray-900 cursor-pointer ${
-														selectedStatus === status ? "bg-gray-100 " : ""
-													}`}
-													onClick={() => handleFilterSelect(status)}
-												>
-													{status.charAt(0).toUpperCase() + status.slice(1)}
-												</li>
-											))}
-										</ul>
-									</div>
+									<>
+										<div
+											className="fixed inset-0 bg-black bg-opacity-50 z-10"
+											onClick={handleCloseDropdown}
+										></div>
+										<div
+											ref={dropdownRef}
+											className={`absolute mt-6 w-[8rem] rounded-md shadow-lg  bg-white z-50 `}
+										>
+											<ul>
+												{["draft", "pending", "paid"].map((status) => (
+													<li
+														key={status}
+														className={`px-4 py-2 rounded-md hover:bg-gray-100 text-gray-900 cursor-pointer ${
+															selectedStatus === status ? "bg-gray-100 " : ""
+														}`}
+														onClick={() => handleFilterSelect(status)}
+													>
+														{status.charAt(0).toUpperCase() + status.slice(1)}
+													</li>
+												))}
+											</ul>
+										</div>
+									</>
 								)}
 
 								{selectedStatus !== "" && (

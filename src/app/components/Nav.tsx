@@ -61,6 +61,7 @@ export default function Nav() {
 	const handleClickOutside = (event) => {
 		if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
 			setMobileDropdownOpen(false);
+			setDropdownOpen(false);
 		}
 	};
 

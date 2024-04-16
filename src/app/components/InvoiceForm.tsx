@@ -463,6 +463,12 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 					{validationErrors.items}
 				</div>
 			)}
+
+			{Object.keys(validationErrors).length !== 0 && (
+				<div style={{ color: "red", marginTop: "10px" }}>
+					There is a problem. Please review
+				</div>
+			)}
 		</>
 	);
 }
