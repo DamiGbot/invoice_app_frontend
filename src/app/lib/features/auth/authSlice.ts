@@ -15,8 +15,6 @@ interface AuthState {
 	loading: boolean;
 	error: string;
 	userId: string | null;
-	// Including refresh token in the state if needed for managing session renewal.
-	// In a real app, consider storing tokens more securely and not directly in the Redux store.
 }
 
 const initialState: AuthState = {
@@ -31,7 +29,6 @@ export const initialCheck = createAsyncThunk(
 	async (_, { getState, dispatch }) => {
 		const state = getState() as RootState;
 		if (state.auth.isLoggedIn) {
-			// If already logged in, no need to check again
 			return true;
 		}
 		const token = localStorage.getItem("accessToken");
