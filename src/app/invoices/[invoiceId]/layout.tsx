@@ -26,6 +26,7 @@ import {
 	clearValidationErrors,
 } from "@/app/lib/features/invoices/invoiceSlice";
 import { useDispatch } from "@/app/hooks/useDispatch";
+import { Invoice } from "@/app/types/Invoice";
 
 type InvoiceLayoutProps = {
 	children: React.ReactNode;
@@ -43,13 +44,14 @@ export default function InvoiceLayout({
 	const dispatch = useDispatch();
 	const { currentInvoice } = useSelector((state: RootState) => state.invoice);
 	const [loading, setLoading] = useState<boolean>(true);
+	const [invoiceData, setData] = useState<Invoice | null>(null);
 	const [error, setError] = useState<string | null>(null);
+	const [isEdit, setIsEdit] = useState<boolean>(false);
 
 	const currentId = params.invoiceId;
-	const isEdit = pathString.split("/")[3] === "edit";
-	console.log(isEdit);
 
 	useEffect(() => {
+		setIsEdit(pathString.split("/")[3] === "edit");
 		const fetchInvoices = async () => {
 			try {
 				const accessToken = localStorage.getItem("accessToken");
@@ -76,7 +78,7 @@ export default function InvoiceLayout({
 		};
 
 		fetchInvoices();
-	}, [currentId]);
+	}, [currentId, pathString]);
 
 	const goBackHandler = () => {
 		dispatch(resetInvoice());
@@ -86,6 +88,68 @@ export default function InvoiceLayout({
 			router.push(`/invoices/${currentId}`);
 		} else {
 			router.push(`/invoices`);
+		}
+	};
+
+	const markAsPaidRequest = async () => {
+		setLoading(true);
+		try {
+			const accessToken = localStorage.getItem("accessToken");
+			const response = await apiInstance.post(
+				`/invoice/${currentId}/mark-as-paid`,
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				}
+			);
+
+			if (invoiceData) {
+				setData({ ...invoiceData, status: "paid" });
+			}
+			setLoading(false);
+		} catch (err) {
+			if (axios.isAxiosError(err) && err.response) {
+				setError(
+					err.response.data.message ||
+						"An error occurred while fetching invoices."
+				);
+			} else {
+				setError("An unknown error occurred");
+			}
+			setLoading(false);
+		}
+	};
+
+	const markAsPendingRequest = async () => {
+		setLoading(true);
+		try {
+			const accessToken = localStorage.getItem("accessToken");
+			const response = await apiInstance.post(
+				`/invoice/${currentId}/mark-as-pending`,
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				}
+			);
+
+			if (invoiceData) {
+				setData({ ...invoiceData, status: "pending" });
+			}
+			setLoading(false);
+		} catch (err) {
+			if (axios.isAxiosError(err) && err.response) {
+				setError(
+					err.response.data.message ||
+						"An error occurred while fetching invoices."
+				);
+			} else {
+				setError("An unknown error occurred");
+			}
+			setLoading(false);
 		}
 	};
 
@@ -129,6 +193,8 @@ export default function InvoiceLayout({
 				<InvoiceActions
 					className="justify-between p-[24px]"
 					params={params}
+					markAsPaidRequest={markAsPaidRequest}
+					markAsPendingRequest={markAsPendingRequest}
 					status={currentInvoice.status}
 					frontendId={currentInvoice.frontendId}
 				/>

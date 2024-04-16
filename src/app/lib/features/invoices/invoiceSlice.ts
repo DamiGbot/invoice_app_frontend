@@ -14,7 +14,7 @@ interface InvoiceState {
 const initialState: InvoiceState = {
 	currentInvoice: {
 		id: "",
-		createdAt: "",
+		createdAt: new Date().toISOString().split("T")[0],
 		frontendId: "",
 		paymentDue: "",
 		description: "",

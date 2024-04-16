@@ -1,10 +1,7 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import { useTheme } from "../context/themeContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { formatDate } from "../helpers/formatDate";
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/lib/store";
 
 type InputFieldProps = {
 	label: string;

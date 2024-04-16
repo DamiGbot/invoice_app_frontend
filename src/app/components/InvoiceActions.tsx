@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -42,8 +42,6 @@ export default function InvoiceActions({
 	frontendId,
 	markAsPendingRequest,
 }: InvoiceActionsProps) {
-	// console.log(params);
-
 	const [isModalOpen, setModalOpen] = useState(false);
 	const router = useRouter();
 	const pathString = usePathname();
@@ -51,13 +49,16 @@ export default function InvoiceActions({
 	const { isMobile } = useResponsive();
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
+	const [isEdit, setIsEdit] = useState<boolean>(false);
 
 	const dispatch = useDispatch();
 	const { currentInvoice } = useSelector((state: RootState) => state.invoice);
 
 	const themes = `${isLight ? "bg-[#ffffff] " : "bg-[#1E2139]"}`;
 
-	const isEdit = pathString.split("/")[3] === "edit";
+	useEffect(() => {
+		setIsEdit(pathString.split("/")[3] === "edit");
+	}, [pathString]);
 
 	const currentId = params.invoiceId;
 

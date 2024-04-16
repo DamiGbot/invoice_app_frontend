@@ -65,13 +65,6 @@ export default function Nav() {
 					<div className="border-t-2 pt-6 w-full border-[#494E6E] flex justify-center items-center mb-6">
 						<div onClick={toggleDropdown} className="cursor-pointer h-[32px]">
 							{firstLetter ? (
-								// <span
-								// 	className={`rounded-full w-8 h-8 flex items-center justify-center font-semibold text-lg
-								// ${firstLetter ? "bg-white text-[#373B53]" : "bg-[#ccc] text-white"}`}
-								// >
-								// 	{firstLetter}
-								// </span>
-
 								<Avatar
 									style={{ backgroundColor: "#0b51c1" }}
 									name={name}
@@ -127,15 +120,11 @@ export default function Nav() {
 					)}
 				</div>
 				<div className="border-l-2 h-full w-[5rem] ml-6 border-[#494E6E] flex justify-center items-center ">
-					<div onClick={toggleDropdown} className="cursor-pointer h-[32px]">
+					<div
+						onClick={toggleDropdown}
+						className="cursor-pointer h-[32px] flex items-center"
+					>
 						{firstLetter ? (
-							// <span
-							// 	className={`rounded-full w-8 h-8 flex items-center justify-center font-semibold text-lg
-							// ${firstLetter ? "bg-white text-[#373B53]" : "bg-[#ccc] text-white"}`}
-							// >
-							// 	{firstLetter}
-							// </span>
-
 							<Avatar
 								style={{ backgroundColor: "#0b51c1" }}
 								name={name}

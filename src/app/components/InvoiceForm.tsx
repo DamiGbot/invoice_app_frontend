@@ -83,16 +83,6 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 		dispatch(updateItem({ index, item: updatedItem }));
 	};
 
-	if (invoiceData.createdAt.length < 1) {
-		updateInvoice({
-			createdAt: new Date().toISOString().split("T")[0],
-		});
-	}
-
-	const formattedDate = invoiceData.createdAt
-		? formatDate(invoiceData.createdAt)
-		: new Date().toISOString().split("T")[0];
-
 	return (
 		<>
 			<form>
@@ -289,7 +279,7 @@ export default function InvoiceForm({ invoiceData }: InvoiceFormProps) {
 						label="Invoice Start Date"
 						name="Invoice Date"
 						type="date"
-						value={formattedDate}
+						value={invoiceData.createdAt}
 						onChange={(newValue) =>
 							dispatch(
 								updateInvoice({

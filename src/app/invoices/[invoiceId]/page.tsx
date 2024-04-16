@@ -27,7 +27,7 @@ type InoviceDetailsProps = {
 const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 	const { isLight } = useTheme();
 	const { isMobile } = useResponsive();
-	const router = useRouter();
+
 	const [invoiceData, setData] = useState<Invoice | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
@@ -94,7 +94,6 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 			}
 			setLoading(false);
 		}
-		// window.location.reload();
 	};
 
 	const markAsPendingRequest = async () => {
@@ -126,7 +125,6 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 			}
 			setLoading(false);
 		}
-		// window.location.reload();
 	};
 
 	if (loading) return <LoadingComponent />;
