@@ -134,11 +134,13 @@ const authSlice = createSlice({
 			.addCase(login.fulfilled, (state, action) => {
 				state.loading = false;
 				state.isLoggedIn = true;
+				state.error = "";
 				state.userId = action.payload.userId;
 				// Optionally update state based on response
 			})
 			.addCase(login.rejected, (state, action: PayloadAction<any>) => {
 				state.loading = false;
+				state.isLoggedIn = false;
 				state.error = action.payload.message || "Failed to login";
 			});
 	},

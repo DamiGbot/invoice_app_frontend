@@ -170,7 +170,7 @@ const Login: React.FC = () => {
 							isLight ? "text-gray-400" : "text-gray-400"
 						} ${isLight ? "hover:text-black" : "hover:text-white"}`}
 					>
-						Register
+						Create an account here
 					</Link>
 
 					<div>
