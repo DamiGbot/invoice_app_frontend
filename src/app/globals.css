@@ -67,3 +67,41 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /* Adjust for other browsers if necessary */
+.notification {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	background-color: #f4f4f4;
+	color: #333;
+	padding: 10px 20px;
+	border-radius: 5px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+	transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+	transform: translateX(100%);
+	opacity: 0;
+}
+
+.notification.info {
+	background-color: #007bff;
+	color: white;
+}
+
+.notification.error {
+	background-color: #dc3545;
+	color: white;
+}
+
+.notification.success {
+	background-color: #28a745;
+	color: white;
+}
+
+.notification.warning {
+	background-color: #ffc107;
+	color: black;
+}
+
+.notification.show {
+	transform: translateX(0);
+	opacity: 1;
+}

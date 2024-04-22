@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LoadingComponent from "@/app/components/UI/Loading";
 import ErrorModal from "@/app/components/UI/Error";
+import DownloadInvoiceButton from "@/app/components/DownloadInvoiceButton";
 
 type InoviceDetailsProps = {
 	params: InvoiceParams;
@@ -605,7 +606,18 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 					>
 						Status
 					</p>
-					<InvoiceStatus status={`${invoiceData.status}`} />
+
+					<div
+						className={`flex flex-row items-center justify-between gap-[1rem]`}
+					>
+						<InvoiceStatus status={`${invoiceData.status}`} />
+
+						{invoiceData &&
+							invoiceData.status &&
+							invoiceData.status.toLowerCase() !== "draft" && (
+								<DownloadInvoiceButton invoiceId={currentId} />
+							)}
+					</div>
 				</Card>
 			) : (
 				<Card
@@ -626,14 +638,23 @@ const InvoiceDetails = ({ params }: InoviceDetailsProps) => {
 						<InvoiceStatus status={`${invoiceData.status}`} />
 					</div>
 
-					<InvoiceActions
-						className="gap-[0.5rem]"
-						params={params}
-						markAsPaidRequest={markAsPaidRequest}
-						markAsPendingRequest={markAsPendingRequest}
-						status={invoiceData.status}
-						frontendId={invoiceData.frontendId}
-					/>
+					<div
+						className={`flex flex-row items-center justify-between gap-[1rem]`}
+					>
+						{invoiceData &&
+							invoiceData.status &&
+							invoiceData.status.toLowerCase() !== "draft" && (
+								<DownloadInvoiceButton invoiceId={currentId} />
+							)}
+						<InvoiceActions
+							className="gap-[0.5rem]"
+							params={params}
+							markAsPaidRequest={markAsPaidRequest}
+							markAsPendingRequest={markAsPendingRequest}
+							status={invoiceData.status}
+							frontendId={invoiceData.frontendId}
+						/>
+					</div>
 				</Card>
 			)}
 

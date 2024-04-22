@@ -24,6 +24,7 @@ import {
 } from "@/app/lib/features/invoices/invoiceSlice";
 import ErrorModal from "./UI/Error";
 import { validateEmail } from "../helpers/formatDate";
+import { useNotification } from "@/app/context/NotificationContext";
 
 type InvoiceActionsProps = {
 	params: InvoiceParams;
@@ -50,6 +51,7 @@ export default function InvoiceActions({
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
 	const [isEdit, setIsEdit] = useState<boolean>(false);
+	const { triggerNotification } = useNotification();
 
 	const dispatch = useDispatch();
 	const { currentInvoice } = useSelector((state: RootState) => state.invoice);
@@ -82,17 +84,24 @@ export default function InvoiceActions({
 			});
 
 			setLoading(false);
+			triggerNotification("Invoice deleted successfully!", "success");
 			router.replace("/invoices");
 		} catch (err) {
+			setLoading(false);
 			if (axios.isAxiosError(err) && err.response) {
 				setError(
 					err.response.data.message ||
-						"An error occurred while fetching invoices."
+						"An error occurred while deleting the invoice."
+				);
+				triggerNotification(
+					err.response.data.message ||
+						"An error occurred while deleting the invoice.",
+					"error"
 				);
 			} else {
 				setError("An unknown error occurred");
+				triggerNotification("An unknown error occurred", "error");
 			}
-			setLoading(false);
 		}
 	};
 

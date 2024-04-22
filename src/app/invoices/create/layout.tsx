@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useTheme } from "@/app/context/themeContext";
+import { useNotification } from "@/app/context/NotificationContext";
 
 import { useRouter } from "next/navigation";
 import arrowLeft from "../../../../public/assets/icon-arrow-left.svg";
@@ -39,6 +40,7 @@ export default function InvoiceLayout({
 	const dispatch = useDispatch();
 	const { isLight } = useTheme();
 	const { isMobile } = useResponsive();
+	const { triggerNotification } = useNotification();
 
 	const currentId = params.invoiceId;
 
@@ -63,6 +65,13 @@ export default function InvoiceLayout({
 				dispatch(clearValidationErrors());
 				router.push("/invoices");
 			}
+			triggerNotification("Invoice created successfully!", "success");
+		} else {
+			triggerNotification("There is a problem. Please review", "error");
+		}
+
+		if (Object.keys(validationErrors).length !== 0) {
+		} else {
 		}
 	};
 

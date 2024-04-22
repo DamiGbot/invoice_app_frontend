@@ -6,7 +6,7 @@ import { ThemeProvider } from "./context/themeContext";
 import { ResponsiveProvider } from "./context/ResponsiveContext";
 import { Provider } from "react-redux";
 import { store } from "./lib/store";
-import { Helmet } from "react-helmet";
+import { NotificationProvider } from "./context/NotificationContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -47,9 +47,11 @@ export default function RootLayout({
 
 				<body className={`${inter.className}`}>
 					<Provider store={store}>
-						<ResponsiveProvider>
-							<ThemeProvider>{children}</ThemeProvider>
-						</ResponsiveProvider>
+						<NotificationProvider>
+							<ResponsiveProvider>
+								<ThemeProvider>{children}</ThemeProvider>
+							</ResponsiveProvider>
+						</NotificationProvider>
 					</Provider>
 				</body>
 			</html>

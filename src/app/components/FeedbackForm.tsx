@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import { useTheme } from "../context/themeContext";
+import apiInstance from "../api/axios";
+import axios from "axios";
+import { useNotification } from "../context/NotificationContext";
 
 type FeedbackFormProps = {
 	closeModal: () => void;
+};
+
+type Feedback = {
+	category: string;
+	description: string;
+	additionalInfo: string;
 };
 
 const FeedbackForm = ({ closeModal }: FeedbackFormProps) => {
@@ -10,10 +19,35 @@ const FeedbackForm = ({ closeModal }: FeedbackFormProps) => {
 	const [description, setDescription] = useState("");
 	const [additionalInfo, setAdditionalInfo] = useState("");
 	const { isLight } = useTheme();
+	const { triggerNotification } = useNotification();
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		console.log({ category, description, additionalInfo });
+
+		const feedbackData: Feedback = { category, description, additionalInfo };
+		try {
+			const accessToken = localStorage.getItem("accessToken");
+			const response = await apiInstance.post("/feedback", feedbackData, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+
+			if (response.status === 201) {
+				triggerNotification("Feedback submitted successfully", "success");
+			} else {
+				triggerNotification("Unexpected successful response", "warning");
+			}
+		} catch (error) {
+			triggerNotification("Error submitting feedback", "error");
+			if (axios.isAxiosError(error) && error.response) {
+				triggerNotification(
+					`Feedback submission failed: ${error.response.status}`,
+					"error"
+				);
+			}
+		}
+
 		closeModal();
 	};
 

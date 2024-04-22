@@ -14,8 +14,6 @@ export default function Wrapper({ children }: WrapperProps) {
 	const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 	const { isLight } = useTheme();
 
-	console.log(isLoggedIn);
-
 	let style = "my-20 w-3/5";
 	if (isMobile) {
 		style = "mx-6 mt-12 mb-6";
