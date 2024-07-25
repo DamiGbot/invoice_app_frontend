@@ -15,12 +15,22 @@ const DownloadInvoiceButton: React.FC<DownloadButtonProps> = ({
 	const handleDownload = async () => {
 		try {
 			const accessToken = localStorage.getItem("accessToken");
-			const response = await apiInstance.get(`/invoice/download/${invoiceId}`, {
-				responseType: "blob", // Important for downloading files
+			const responseInvoice = await apiInstance.get(`/invoice/${invoiceId}`, {
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 				},
 			});
+
+			const response = await axios.post(
+				`https://pdfdownload7987492.azurewebsites.net/api/pdfdownload384793`,
+				responseInvoice.data.result,
+				{
+					responseType: "blob", // Important for downloading files
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				}
+			);
 
 			if (response.status === 200) {
 				const blob = new Blob([response.data], { type: "application/pdf" });
